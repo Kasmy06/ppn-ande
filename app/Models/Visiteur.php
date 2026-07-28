@@ -17,7 +17,10 @@ class Visiteur extends Model
         'type',
         'etablissement_id',
         'classe_ou_poste',
+        'telephone',
+        'email',
         'date_visite',
+        'heure_arrivee',
         'cree_par',
     ];
 
@@ -43,5 +46,10 @@ class Visiteur extends Model
     public function getInitialesAttribute(): string
     {
         return mb_strtoupper(mb_substr($this->prenom, 0, 1) . mb_substr($this->nom, 0, 1));
+    }
+
+    public function getHeureFormateeAttribute(): ?string
+    {
+        return $this->heure_arrivee ? substr($this->heure_arrivee, 0, 5) : null;
     }
 }

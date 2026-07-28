@@ -29,9 +29,7 @@
       <span><span class="badge badge-blue">■</span> Annulée</span>
       <span><i class="fas fa-gauge-high"></i> Capacité journalière : <strong>{{ $capaciteJournaliere }}</strong> participants</span>
     </div>
-    @if (auth()->user()->isSuperAdmin())
-      <button type="button" class="btn btn-primary btn-sm" onclick="openCreateModal('{{ now()->format('Y-m-d') }}')"><i class="fas fa-plus"></i> Nouvelle réservation</button>
-    @endif
+    <button type="button" class="btn btn-primary btn-sm" onclick="openCreateModal('{{ now()->format('Y-m-d') }}')"><i class="fas fa-plus"></i> Nouvelle réservation</button>
   </div>
 
   <div class="table-card" style="overflow:hidden;">
@@ -48,7 +46,9 @@
           $horsMois = $jour->month !== $mois->month;
           $participantsJour = $resasJour->where('statut', '!=', 'annulee')->sum('nb_participants_prevu');
         @endphp
-        <div style="min-height:110px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:0.5rem;background:{{ $horsMois ? 'var(--bg)' : 'white' }};{{ $jour->isToday() ? 'box-shadow: inset 0 0 0 2px var(--blue-mid);' : '' }}">
+        <div
+          onclick="openCreateModal('{{ $key }}')"
+          style="min-height:110px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:0.5rem;background:{{ $horsMois ? 'var(--bg)' : 'white' }};{{ $jour->isToday() ? 'box-shadow: inset 0 0 0 2px var(--blue-mid);' : '' }}cursor:pointer;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.35rem;">
             <span style="font-size:0.78rem;font-weight:{{ $jour->isToday() ? '700' : '500' }};color:{{ $horsMois ? 'var(--muted)' : 'var(--text)' }};">{{ $jour->day }}</span>
             @if ($participantsJour > 0)
@@ -57,21 +57,18 @@
           </div>
           @foreach ($resasJour as $r)
             <div
-              @if (auth()->user()->isSuperAdmin())
-                onclick="openEditModal({
-                  action: '{{ route('calendrier.update', $r->id) }}',
-                  id: {{ $r->id }},
-                  etablissement_id: {{ $r->etablissement_id }},
-                  date: {{ Js::from($r->date->format('Y-m-d')) }},
-                  creneau: {{ Js::from($r->creneau) }},
-                  nb_participants_prevu: {{ $r->nb_participants_prevu }},
-                  nb_encadrants_prevu: {{ $r->nb_encadrants_prevu }},
-                  statut: {{ Js::from($r->statut) }}
-                })"
-                style="cursor:pointer;"
-              @endif
+              onclick="event.stopPropagation(); openEditModal({
+                action: '{{ route('calendrier.update', $r->id) }}',
+                id: {{ $r->id }},
+                etablissement_id: {{ $r->etablissement_id }},
+                date: {{ Js::from($r->date->format('Y-m-d')) }},
+                creneau: {{ Js::from($r->creneau) }},
+                nb_participants_prevu: {{ $r->nb_participants_prevu }},
+                nb_encadrants_prevu: {{ $r->nb_encadrants_prevu }},
+                statut: {{ Js::from($r->statut) }}
+              })"
               class="badge badge-{{ $statutColors[$r->statut] }}"
-              style="display:block;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500;"
+              style="display:block;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500;cursor:pointer;"
               title="{{ $r->etablissement->nom }} — {{ $r->creneau === 'matin' ? 'Matin' : 'Après-midi' }} — {{ $r->nb_participants_prevu }} pers.">
               {{ $r->creneau === 'matin' ? '🌅' : '🌇' }} {{ Str::limit($r->etablissement->nom, 14) }}
             </div>
@@ -81,7 +78,6 @@
     </div>
   </div>
 
-  @if (auth()->user()->isSuperAdmin())
   <!-- MODAL -->
   <div class="modal-overlay" id="modalOverlay">
     <div class="modal">
@@ -140,7 +136,9 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-outline" id="btnDeleteResa" style="{{ old('reservation_id') ? '' : 'display:none;' }}margin-right:auto;" data-action="{{ old('reservation_id') ? route('calendrier.destroy', old('reservation_id')) : '' }}" onclick="deleteReservation()"><i class="fas fa-trash"></i> Supprimer</button>
+          @if (auth()->user()->isSuperAdmin())
+            <button type="button" class="btn btn-outline" id="btnDeleteResa" style="{{ old('reservation_id') ? '' : 'display:none;' }}margin-right:auto;" data-action="{{ old('reservation_id') ? route('calendrier.destroy', old('reservation_id')) : '' }}" onclick="deleteReservation()"><i class="fas fa-trash"></i> Supprimer</button>
+          @endif
           <button type="button" class="btn btn-outline" onclick="closeModal()">Annuler</button>
           <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Enregistrer</button>
         </div>
@@ -148,10 +146,11 @@
     </div>
   </div>
 
-  <form method="POST" id="deleteForm" style="display:none;">
-    @csrf
-    @method('DELETE')
-  </form>
+  @if (auth()->user()->isSuperAdmin())
+    <form method="POST" id="deleteForm" style="display:none;">
+      @csrf
+      @method('DELETE')
+    </form>
   @endif
 
 @endsection
@@ -170,7 +169,8 @@
     form.reset();
     document.getElementById('fDate').value = date;
     document.getElementById('fEncadrants').value = 1;
-    document.getElementById('btnDeleteResa').style.display = 'none';
+    const btnDelete = document.getElementById('btnDeleteResa');
+    if (btnDelete) btnDelete.style.display = 'none';
     openModal();
   }
 
@@ -186,13 +186,18 @@
     document.getElementById('fParticipants').value = r.nb_participants_prevu;
     document.getElementById('fEncadrants').value = r.nb_encadrants_prevu;
     document.getElementById('fStatut').value = r.statut;
-    document.getElementById('btnDeleteResa').style.display = 'inline-flex';
-    document.getElementById('btnDeleteResa').dataset.action = r.action;
+    const btnDelete = document.getElementById('btnDeleteResa');
+    if (btnDelete) {
+      btnDelete.style.display = 'inline-flex';
+      btnDelete.dataset.action = r.action;
+    }
     openModal();
   }
 
   function deleteReservation() {
-    const url = document.getElementById('btnDeleteResa').dataset.action;
+    const btnDelete = document.getElementById('btnDeleteResa');
+    if (!btnDelete) return;
+    const url = btnDelete.dataset.action;
     document.getElementById('deleteForm').action = url;
     document.getElementById('deleteForm').submit();
   }

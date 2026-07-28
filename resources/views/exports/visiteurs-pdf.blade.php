@@ -4,7 +4,7 @@
   <meta charset="UTF-8"/>
   <style>
     body { font-family: DejaVu Sans, sans-serif; font-size: 11px; color: #1e293b; }
-    h1 { font-size: 16px; color: #1a3c6e; margin-bottom: 2px; }
+    h1 { font-size: 16px; color: #3B0B4D; margin-bottom: 2px; }
     .sub { color: #64748b; font-size: 10px; margin-bottom: 16px; }
     table { width: 100%; border-collapse: collapse; }
     th { background: #f1f5f9; text-align: left; padding: 6px 8px; font-size: 9px; text-transform: uppercase; color: #475569; border-bottom: 1px solid #e2e8f0; }
@@ -25,7 +25,10 @@
         <th>Type</th>
         <th>Établissement</th>
         <th>Classe / Poste</th>
+        <th>Téléphone</th>
+        <th>Email</th>
         <th>Date</th>
+        <th>Heure</th>
       </tr>
     </thead>
     <tbody>
@@ -37,7 +40,10 @@
           <td>{{ $v->type }}</td>
           <td>{{ $v->etablissement->nom ?? '' }}</td>
           <td>{{ $v->classe_ou_poste }}</td>
+          <td>{{ $v->telephone }}</td>
+          <td>{{ $v->email }}</td>
           <td>{{ $v->date_visite->format('d/m/Y') }}</td>
+          <td>{{ $v->heureFormatee ?? '' }}</td>
         </tr>
       @endforeach
     </tbody>

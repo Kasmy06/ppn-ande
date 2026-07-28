@@ -8,9 +8,11 @@ use App\Models\ExportHistorique;
 use App\Models\JournalActivite;
 use App\Models\Visiteur;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,6 +32,84 @@ class VisiteurController extends Controller
             'visiteurs' => $visiteurs,
             'etablissements' => Etablissement::orderBy('nom')->get(),
             'filters' => $request->only(['q', 'type', 'sexe', 'date', 'sort', 'dir']),
+        ]);
+    }
+
+    public function rechercherExistant(Request $request): JsonResponse
+    {
+        $q = trim((string) $request->query('q', ''));
+
+        if (mb_strlen($q) < 2) {
+            return response()->json([]);
+        }
+
+        $resultats = Visiteur::query()
+            ->select([
+                'visiteurs.prenom',
+                'visiteurs.nom',
+                'visiteurs.sexe',
+                'visiteurs.type',
+                'visiteurs.etablissement_id',
+                'visiteurs.classe_ou_poste',
+                'etablissements.nom as etablissement_nom',
+                DB::raw('COUNT(*) as nb_visites'),
+                DB::raw('MAX(visiteurs.date_visite) as derniere_visite'),
+                DB::raw('MAX(visiteurs.telephone) as telephone'),
+                DB::raw('MAX(visiteurs.email) as email'),
+            ])
+            ->leftJoin('etablissements', 'etablissements.id', '=', 'visiteurs.etablissement_id')
+            ->where(function ($query) use ($q) {
+                $term = "%{$q}%";
+                $query->where('visiteurs.prenom', 'like', $term)
+                    ->orWhere('visiteurs.nom', 'like', $term)
+                    ->orWhereRaw("CONCAT(visiteurs.prenom, ' ', visiteurs.nom) LIKE ?", [$term]);
+            })
+            ->groupBy(
+                'visiteurs.prenom',
+                'visiteurs.nom',
+                'visiteurs.sexe',
+                'visiteurs.type',
+                'visiteurs.etablissement_id',
+                'visiteurs.classe_ou_poste',
+                'etablissements.nom'
+            )
+            ->orderByDesc('derniere_visite')
+            ->limit(8)
+            ->get();
+
+        return response()->json($resultats);
+    }
+
+    public function fiche(Request $request): View
+    {
+        $request->validate([
+            'prenom' => ['required', 'string'],
+            'nom' => ['required', 'string'],
+            'sexe' => ['required', 'in:M,F'],
+        ]);
+
+        $visites = Visiteur::query()
+            ->where('prenom', $request->query('prenom'))
+            ->where('nom', $request->query('nom'))
+            ->where('sexe', $request->query('sexe'))
+            ->with('etablissement')
+            ->orderByDesc('date_visite')
+            ->orderByDesc('heure_arrivee')
+            ->get();
+
+        abort_if($visites->isEmpty(), 404);
+
+        return view('visiteurs.fiche', [
+            'prenom' => $request->query('prenom'),
+            'nom' => $request->query('nom'),
+            'sexe' => $request->query('sexe'),
+            'visites' => $visites,
+            'derniereVisite' => $visites->first(),
+            'premiereVisite' => $visites->last(),
+            'etablissements' => $visites->pluck('etablissement.nom')->filter()->unique()->values(),
+            'types' => $visites->pluck('type')->unique()->values(),
+            'telephone' => $visites->pluck('telephone')->filter()->first(),
+            'email' => $visites->pluck('email')->filter()->first(),
         ]);
     }
 
@@ -77,7 +157,7 @@ class VisiteurController extends Controller
             default => response()->streamDownload(function () use ($visiteurs) {
                 $handle = fopen('php://output', 'w');
                 fwrite($handle, "\xEF\xBB\xBF");
-                fputcsv($handle, ['Prénom', 'Nom', 'Genre', 'Type', 'Établissement', 'Classe / Poste', 'Date de visite'], ';');
+                fputcsv($handle, ['Prénom', 'Nom', 'Genre', 'Type', 'Établissement', 'Classe / Poste', 'Téléphone', 'Email', 'Date de visite', 'Heure d\'arrivée'], ';');
 
                 foreach ($visiteurs as $v) {
                     fputcsv($handle, [
@@ -87,7 +167,10 @@ class VisiteurController extends Controller
                         $v->type,
                         $v->etablissement->nom ?? '',
                         $v->classe_ou_poste,
+                        $v->telephone,
+                        $v->email,
                         $v->date_visite->format('d/m/Y'),
+                        $v->heureFormatee ?? '',
                     ], ';');
                 }
 
@@ -132,7 +215,10 @@ class VisiteurController extends Controller
             'type' => ['required', 'in:Élève,Fonctionnaire,Externe'],
             'etablissement_id' => ['nullable', 'exists:etablissements,id'],
             'classe_ou_poste' => ['nullable', 'string', 'max:100'],
+            'telephone' => ['nullable', 'string', 'max:30'],
+            'email' => ['nullable', 'email', 'max:150'],
             'date_visite' => ['required', 'date'],
+            'heure_arrivee' => ['required', 'date_format:H:i'],
         ]);
     }
 }

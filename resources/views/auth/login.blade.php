@@ -10,12 +10,20 @@
   <link rel="stylesheet" href="{{ asset('css/app.css') }}"/>
 </head>
 <body class="login-body">
+  @php
+    $logoPath = \App\Models\ParametreApplication::get('logo_path');
+    $nomStructureLogin = \App\Models\ParametreApplication::get('nom_structure', "PPN d'Andé");
+  @endphp
   <div class="left-panel">
     <div class="brand-section">
-      <div class="logo-ring">
-        <i class="fas fa-network-wired"></i>
+      <div class="logo-ring" style="{{ $logoPath ? 'background:white;overflow:hidden;' : '' }}">
+        @if ($logoPath)
+          <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($logoPath) }}" alt="Logo" style="width:100%;height:100%;object-fit:contain;border-radius:50%;padding:8px;box-sizing:border-box;"/>
+        @else
+          <i class="fas fa-network-wired"></i>
+        @endif
       </div>
-      <div class="brand-name">PPN d'Andé</div>
+      <div class="brand-name">{{ $nomStructureLogin }}</div>
       <div class="brand-sub">Point de Présence Numérique</div>
       <div class="divider-gold"></div>
       <p class="brand-desc">

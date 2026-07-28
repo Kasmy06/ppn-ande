@@ -18,7 +18,7 @@ class VisiteursExport implements FromCollection, WithHeadings, WithMapping
 
     public function headings(): array
     {
-        return ['Prénom', 'Nom', 'Genre', 'Type', 'Établissement', 'Classe / Poste', 'Date de visite'];
+        return ['Prénom', 'Nom', 'Genre', 'Type', 'Établissement', 'Classe / Poste', 'Téléphone', 'Email', 'Date de visite', 'Heure d\'arrivée'];
     }
 
     public function map($visiteur): array
@@ -30,7 +30,10 @@ class VisiteursExport implements FromCollection, WithHeadings, WithMapping
             $visiteur->type,
             $visiteur->etablissement->nom ?? '',
             $visiteur->classe_ou_poste,
+            $visiteur->telephone,
+            $visiteur->email,
             $visiteur->date_visite->format('d/m/Y'),
+            $visiteur->heureFormatee ?? '',
         ];
     }
 }

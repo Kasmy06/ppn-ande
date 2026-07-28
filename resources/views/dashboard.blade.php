@@ -117,10 +117,15 @@
         <tbody>
           @forelse ($derniersVisiteurs as $v)
             <tr>
-              <td><strong>{{ $v->prenom }} {{ $v->nom }}</strong></td>
+              <td><a href="{{ route('visiteurs.fiche', ['prenom' => $v->prenom, 'nom' => $v->nom, 'sexe' => $v->sexe]) }}" class="name-link">{{ $v->prenom }} {{ $v->nom }}</a></td>
               <td><span class="badge badge-{{ $v->type === 'Élève' ? 'blue' : ($v->type === 'Fonctionnaire' ? 'orange' : 'green') }}">{{ $v->type }}</span></td>
               <td>{{ $v->etablissement->nom ?? '—' }}</td>
-              <td>{{ $v->date_visite->format('d/m/Y') }}</td>
+              <td>
+                {{ $v->date_visite->format('d/m/Y') }}
+                @if ($v->heureFormatee)
+                  <div style="font-size:0.72rem;color:var(--muted);"><i class="far fa-clock"></i> {{ $v->heureFormatee }}</div>
+                @endif
+              </td>
             </tr>
           @empty
             <tr><td colspan="4" style="text-align:center;color:var(--muted);padding:1.5rem;">Aucun visiteur enregistré pour le moment.</td></tr>
@@ -165,7 +170,7 @@
       labels: ['Garçons', 'Filles'],
       datasets: [{
         data: [{{ $garcons }}, {{ $filles }}],
-        backgroundColor: ['#2563eb', '#c9a84c'],
+        backgroundColor: ['#8E2E8E', '#1FA24B'],
         borderWidth: 3, borderColor: '#fff', hoverOffset: 8,
       }]
     },
@@ -182,7 +187,7 @@
       labels: @json($topEtablissements->pluck('nom')),
       datasets: [{
         data: @json($topEtablissements->pluck('visiteurs_count')),
-        backgroundColor: ['#2563eb', '#10b981', '#c9a84c', '#8b5cf6', '#f59e0b', '#ef4444'],
+        backgroundColor: ['#8E2E8E', '#10b981', '#F5B301', '#8b5cf6', '#f59e0b', '#ef4444'],
         borderRadius: 8, borderSkipped: false,
       }]
     },
@@ -200,10 +205,10 @@
       datasets: [{
         label: 'Visiteurs',
         data: @json($mensuel),
-        borderColor: '#2563eb',
-        backgroundColor: 'rgba(37,99,235,0.1)',
+        borderColor: '#8E2E8E',
+        backgroundColor: 'rgba(142,46,142,0.1)',
         borderWidth: 2.5,
-        pointBackgroundColor: '#2563eb',
+        pointBackgroundColor: '#8E2E8E',
         pointRadius: 4,
         fill: true,
         tension: 0.4,

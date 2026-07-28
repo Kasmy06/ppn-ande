@@ -6,6 +6,7 @@ use App\Models\Etablissement;
 use App\Models\Visiteur;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class StatistiqueController extends Controller
@@ -71,6 +72,27 @@ class StatistiqueController extends Controller
             'pourcentage' => $total > 0 ? round(($e->visiteurs_count / $total) * 100, 1) : 0,
         ]);
 
+        $topVisiteurs = Visiteur::query()
+            ->select([
+                'visiteurs.prenom',
+                'visiteurs.nom',
+                'visiteurs.sexe',
+                'visiteurs.type',
+                'etablissements.nom as etablissement_nom',
+                DB::raw('COUNT(*) as nb_visites'),
+                DB::raw('MAX(visiteurs.date_visite) as derniere_visite'),
+            ])
+            ->leftJoin('etablissements', 'etablissements.id', '=', 'visiteurs.etablissement_id')
+            ->whereBetween('visiteurs.date_visite', [$dateDebut, $dateFin])
+            ->when($request->filled('type'), fn ($q) => $q->where('visiteurs.type', $request->query('type')))
+            ->when($request->filled('sexe'), fn ($q) => $q->where('visiteurs.sexe', $request->query('sexe')))
+            ->when($request->filled('etablissement_id'), fn ($q) => $q->where('visiteurs.etablissement_id', $request->query('etablissement_id')))
+            ->groupBy('visiteurs.prenom', 'visiteurs.nom', 'visiteurs.sexe', 'visiteurs.type', 'etablissements.nom')
+            ->havingRaw('COUNT(*) > 1')
+            ->orderByDesc('nb_visites')
+            ->take(10)
+            ->get();
+
         $frequentationMensuelle = $mois->map(function ($m, $i) use ($evolutionMensuelle) {
             $courant = $evolutionMensuelle[$i];
             $precedent = $i > 0 ? $evolutionMensuelle[$i - 1] : null;
@@ -96,6 +118,7 @@ class StatistiqueController extends Controller
             'repartitionType' => $repartitionType,
             'topEtablissements' => $topEtablissements,
             'resumeEtablissements' => $resumeEtablissements,
+            'topVisiteurs' => $topVisiteurs,
             'frequentationMensuelle' => $frequentationMensuelle,
         ]);
     }

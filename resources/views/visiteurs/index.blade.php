@@ -68,7 +68,9 @@
               <td>
                 <div class="avatar-name">
                   <div class="mini-avatar" style="background:#dbeafe;color:#1d4ed8;">{{ $v->initiales }}</div>
-                  <strong>{{ $v->prenom }} {{ $v->nom }}</strong>
+                  <a href="{{ route('visiteurs.fiche', ['prenom' => $v->prenom, 'nom' => $v->nom, 'sexe' => $v->sexe]) }}" class="name-link">
+                    {{ $v->prenom }} {{ $v->nom }}
+                  </a>
                 </div>
               </td>
               <td>
@@ -80,7 +82,12 @@
               </td>
               <td><span class="badge badge-{{ $v->type === 'Élève' ? 'blue' : ($v->type === 'Fonctionnaire' ? 'orange' : 'green') }}">{{ $v->type }}</span></td>
               <td>{{ $v->etablissement->nom ?? '—' }}</td>
-              <td>{{ $v->date_visite->format('d/m/Y') }}</td>
+              <td>
+                {{ $v->date_visite->format('d/m/Y') }}
+                @if ($v->heureFormatee)
+                  <div style="font-size:0.72rem;color:var(--muted);"><i class="far fa-clock"></i> {{ $v->heureFormatee }}</div>
+                @endif
+              </td>
               <td>
                 <div class="action-btns">
                   <button type="button" class="btn btn-sm btn-outline" title="Modifier"
@@ -93,7 +100,10 @@
                       type: {{ Js::from($v->type) }},
                       etablissement_id: {{ Js::from($v->etablissement_id) }},
                       classe_ou_poste: {{ Js::from($v->classe_ou_poste) }},
-                      date_visite: {{ Js::from($v->date_visite->format('Y-m-d')) }}
+                      telephone: {{ Js::from($v->telephone) }},
+                      email: {{ Js::from($v->email) }},
+                      date_visite: {{ Js::from($v->date_visite->format('Y-m-d')) }},
+                      heure_arrivee: {{ Js::from($v->heureFormatee) }}
                     })">
                     <i class="fas fa-pen"></i>
                   </button>
@@ -132,6 +142,14 @@
           <button type="button" class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
         </div>
         <div class="modal-body">
+          <div class="form-group" id="rechercheExistantWrap" style="{{ $editingId ? 'display:none;' : '' }}position:relative;">
+            <label>Ce visiteur est-il déjà venu ?</label>
+            <div class="input-wrap">
+              <input class="form-control" type="text" id="fRecherche" placeholder="Tapez un nom pour retrouver un visiteur déjà enregistré..." autocomplete="off"/>
+            </div>
+            <div id="rechercheResultats" style="display:none;position:absolute;z-index:10;left:0;right:0;top:100%;margin-top:4px;background:white;border:1px solid var(--border);border-radius:10px;box-shadow:0 8px 25px rgba(0,0,0,0.1);max-height:220px;overflow-y:auto;"></div>
+            <p style="font-size:0.75rem;color:var(--muted);margin-top:0.4rem;">Sélectionner un résultat pré-remplit sa fiche ci-dessous — il ne restera qu'à ajuster la date.</p>
+          </div>
           <div class="form-row">
             <div class="form-group">
               <label>Prénom *</label>
@@ -182,8 +200,25 @@
               @error('date_visite') <div class="field-error">{{ $message }}</div> @enderror
             </div>
             <div class="form-group">
-              <label>Classe / Poste</label>
-              <input class="form-control" type="text" name="classe_ou_poste" id="fClasse" value="{{ old('classe_ou_poste') }}" placeholder="Ex: CM2 / Inspecteur"/>
+              <label>Heure d'arrivée *</label>
+              <input class="form-control" type="time" name="heure_arrivee" id="fHeure" value="{{ old('heure_arrivee', now()->format('H:i')) }}" required/>
+              @error('heure_arrivee') <div class="field-error">{{ $message }}</div> @enderror
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Classe / Poste</label>
+            <input class="form-control" type="text" name="classe_ou_poste" id="fClasse" value="{{ old('classe_ou_poste') }}" placeholder="Ex: CM2 / Inspecteur"/>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Téléphone</label>
+              <input class="form-control" type="text" name="telephone" id="fTelephone" value="{{ old('telephone') }}" placeholder="Ex: 07 00 00 00 00"/>
+              @error('telephone') <div class="field-error">{{ $message }}</div> @enderror
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input class="form-control" type="email" name="email" id="fEmail" value="{{ old('email') }}" placeholder="Ex: nom@exemple.fr"/>
+              @error('email') <div class="field-error">{{ $message }}</div> @enderror
             </div>
           </div>
         </div>
@@ -230,6 +265,10 @@
     document.getElementById('fId').value = '';
     form.reset();
     document.getElementById('fDate').value = new Date().toISOString().split('T')[0];
+    document.getElementById('fHeure').value = new Date().toTimeString().slice(0, 5);
+    document.getElementById('rechercheExistantWrap').style.display = '';
+    document.getElementById('fRecherche').value = '';
+    document.getElementById('rechercheResultats').style.display = 'none';
     openModal();
   }
 
@@ -245,9 +284,64 @@
     document.getElementById('fType').value = v.type;
     document.getElementById('fEtab').value = v.etablissement_id || '';
     document.getElementById('fClasse').value = v.classe_ou_poste || '';
+    document.getElementById('fTelephone').value = v.telephone || '';
+    document.getElementById('fEmail').value = v.email || '';
     document.getElementById('fDate').value = v.date_visite;
+    document.getElementById('fHeure').value = v.heure_arrivee || '';
+    document.getElementById('rechercheExistantWrap').style.display = 'none';
     openModal();
   }
+
+  // Recherche d'un visiteur déjà connu, pour pré-remplir le formulaire d'ajout.
+  let rechercheTimer = null;
+  document.getElementById('fRecherche').addEventListener('input', function () {
+    const q = this.value.trim();
+    clearTimeout(rechercheTimer);
+    const resultatsBox = document.getElementById('rechercheResultats');
+
+    if (q.length < 2) {
+      resultatsBox.style.display = 'none';
+      resultatsBox.innerHTML = '';
+      return;
+    }
+
+    rechercheTimer = setTimeout(() => {
+      fetch(`{{ route('visiteurs.rechercher') }}?q=${encodeURIComponent(q)}`)
+        .then(r => r.json())
+        .then(data => {
+          if (!data.length) {
+            resultatsBox.innerHTML = '<div style="padding:0.75rem 1rem;font-size:0.85rem;color:var(--muted);">Aucun visiteur existant trouvé.</div>';
+            resultatsBox.style.display = 'block';
+            return;
+          }
+          resultatsBox.innerHTML = data.map((v, i) => `
+            <div class="resultat-item" data-index="${i}" style="padding:0.65rem 1rem;cursor:pointer;border-bottom:1px solid var(--border);font-size:0.85rem;">
+              <strong>${v.prenom} ${v.nom}</strong> — ${v.type}${v.etablissement_nom ? ' · ' + v.etablissement_nom : ''}
+              <div style="font-size:0.72rem;color:var(--muted);">déjà venu(e) ${v.nb_visites}x, dernière visite le ${new Date(v.derniere_visite).toLocaleDateString('fr-FR')}</div>
+            </div>
+          `).join('');
+          resultatsBox.querySelectorAll('.resultat-item').forEach(el => {
+            el.addEventListener('mouseenter', () => el.style.background = 'var(--bg)');
+            el.addEventListener('mouseleave', () => el.style.background = 'white');
+            el.addEventListener('click', () => {
+              const v = data[el.dataset.index];
+              document.getElementById('fPrenom').value = v.prenom;
+              document.getElementById('fNom').value = v.nom;
+              document.getElementById('fSexe').value = v.sexe;
+              document.getElementById('fType').value = v.type;
+              document.getElementById('fEtab').value = v.etablissement_id || '';
+              document.getElementById('fClasse').value = v.classe_ou_poste || '';
+              document.getElementById('fTelephone').value = v.telephone || '';
+              document.getElementById('fEmail').value = v.email || '';
+              document.getElementById('fRecherche').value = `${v.prenom} ${v.nom}`;
+              resultatsBox.style.display = 'none';
+              showToast('Fiche pré-remplie — vérifiez la date de visite.', 'success');
+            });
+          });
+          resultatsBox.style.display = 'block';
+        });
+    }, 300);
+  });
 
   function confirmDelete(url, name) {
     document.getElementById('confirmText').textContent = `Le visiteur "${name}" sera définitivement supprimé de la base de données.`;

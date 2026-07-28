@@ -33,6 +33,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/visiteurs', [VisiteurController::class, 'index'])->name('visiteurs.index');
     Route::get('/visiteurs/export', [VisiteurController::class, 'export'])->name('visiteurs.export');
+    Route::get('/visiteurs/rechercher-existant', [VisiteurController::class, 'rechercherExistant'])->name('visiteurs.rechercher');
+    Route::get('/visiteurs/fiche', [VisiteurController::class, 'fiche'])->name('visiteurs.fiche');
     Route::post('/visiteurs', [VisiteurController::class, 'store'])->name('visiteurs.store');
     Route::put('/visiteurs/{visiteur}', [VisiteurController::class, 'update'])->name('visiteurs.update');
 
@@ -41,6 +43,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/statistiques', [StatistiqueController::class, 'index'])->name('statistiques.index');
 
     Route::get('/calendrier', [ReservationController::class, 'index'])->name('calendrier.index');
+    Route::post('/calendrier', [ReservationController::class, 'store'])->name('calendrier.store');
+    Route::put('/calendrier/{reservation}', [ReservationController::class, 'update'])->name('calendrier.update');
 
     Route::get('/exports', [ExportController::class, 'index'])->name('exports.index');
 
@@ -57,8 +61,6 @@ Route::middleware('auth')->group(function () {
         Route::put('/etablissements/{etablissement}', [EtablissementController::class, 'update'])->name('etablissements.update');
         Route::delete('/etablissements/{etablissement}', [EtablissementController::class, 'destroy'])->name('etablissements.destroy');
 
-        Route::post('/calendrier', [ReservationController::class, 'store'])->name('calendrier.store');
-        Route::put('/calendrier/{reservation}', [ReservationController::class, 'update'])->name('calendrier.update');
         Route::delete('/calendrier/{reservation}', [ReservationController::class, 'destroy'])->name('calendrier.destroy');
 
         Route::prefix('parametres')->name('parametres.')->group(function () {
@@ -69,6 +71,7 @@ Route::middleware('auth')->group(function () {
 
             Route::get('/application', [ParametreController::class, 'edit'])->name('application.edit');
             Route::put('/application', [ParametreController::class, 'update'])->name('application.update');
+            Route::delete('/application/logo', [ParametreController::class, 'supprimerLogo'])->name('application.logo.destroy');
 
             Route::get('/journal', [JournalController::class, 'index'])->name('journal.index');
         });

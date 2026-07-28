@@ -14,10 +14,20 @@
 
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-brand">
+    @php
+      $logoPath = \App\Models\ParametreApplication::get('logo_path');
+      $nomStructureSidebar = \App\Models\ParametreApplication::get('nom_structure', "PPN d'Andé");
+    @endphp
     <div class="sidebar-logo">
-      <div class="logo-icon"><i class="fas fa-network-wired"></i></div>
+      <div class="logo-icon" style="{{ $logoPath ? 'background:white;overflow:hidden;' : '' }}">
+        @if ($logoPath)
+          <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($logoPath) }}" alt="Logo" style="width:100%;height:100%;object-fit:contain;"/>
+        @else
+          <i class="fas fa-network-wired"></i>
+        @endif
+      </div>
       <div class="logo-text">
-        <div class="name">PPN d'Andé</div>
+        <div class="name">{{ $nomStructureSidebar }}</div>
         <div class="sub">Point Numérique</div>
       </div>
     </div>

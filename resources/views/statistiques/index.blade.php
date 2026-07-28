@@ -52,10 +52,10 @@
 
   <div class="kpi-row">
     <div class="kpi-card">
-      <div class="kpi-icon" style="background:#dbeafe;color:#2563eb;"><i class="fas fa-users"></i></div>
+      <div class="kpi-icon" style="background:#f6ecf8;color:#8E2E8E;"><i class="fas fa-users"></i></div>
       <div class="kpi-val">{{ $total }}</div>
       <div class="kpi-label">Total visiteurs</div>
-      <div class="kpi-bar"><div class="progress-fill" style="width:100%;background:#2563eb;height:4px;"></div></div>
+      <div class="kpi-bar"><div class="progress-fill" style="width:100%;background:#8E2E8E;height:4px;"></div></div>
     </div>
     <div class="kpi-card">
       <div class="kpi-icon" style="background:#d1fae5;color:#059669;"><i class="fas fa-graduation-cap"></i></div>
@@ -118,7 +118,7 @@
               <td>{{ $r['nom'] }}</td>
               <td><strong>{{ $r['total'] }}</strong></td>
               <td>{{ $r['pourcentage'] }}%</td>
-              <td><div class="progress-bar"><div class="progress-fill" style="width:{{ $r['pourcentage'] }}%;background:#2563eb;"></div></div></td>
+              <td><div class="progress-bar"><div class="progress-fill" style="width:{{ $r['pourcentage'] }}%;background:#8E2E8E;"></div></div></td>
             </tr>
           @empty
             <tr><td colspan="4" style="text-align:center;color:var(--muted);padding:1.5rem;">Aucune donnée sur cette période.</td></tr>
@@ -147,6 +147,41 @@
               </td>
             </tr>
           @endforeach
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="table-card" style="margin-bottom:1.75rem;">
+    <div class="table-card-header">
+      <div class="table-info">
+        <div class="title">Visiteurs les plus fidèles</div>
+        <div class="count">Personnes venues plus d'une fois sur la période sélectionnée</div>
+      </div>
+    </div>
+    <div style="overflow-x:auto;">
+      <table>
+        <thead>
+          <tr><th>#</th><th>Nom</th><th>Type</th><th>Établissement</th><th>Visites</th><th>Dernière visite</th></tr>
+        </thead>
+        <tbody>
+          @forelse ($topVisiteurs as $i => $v)
+            <tr>
+              <td><strong>{{ $i + 1 }}</strong></td>
+              <td>
+                <div class="avatar-name">
+                  <div class="mini-avatar" style="background:#f6ecf8;color:#8E2E8E;">{{ mb_strtoupper(mb_substr($v->prenom, 0, 1).mb_substr($v->nom, 0, 1)) }}</div>
+                  <a href="{{ route('visiteurs.fiche', ['prenom' => $v->prenom, 'nom' => $v->nom, 'sexe' => $v->sexe]) }}" class="name-link">{{ $v->prenom }} {{ $v->nom }}</a>
+                </div>
+              </td>
+              <td><span class="badge badge-{{ $v->type === 'Élève' ? 'blue' : ($v->type === 'Fonctionnaire' ? 'orange' : 'green') }}">{{ $v->type }}</span></td>
+              <td>{{ $v->etablissement_nom ?? '—' }}</td>
+              <td><span class="badge" style="background:#f6ecf8;color:#8E2E8E;">{{ $v->nb_visites }}x</span></td>
+              <td>{{ \Illuminate\Support\Carbon::parse($v->derniere_visite)->format('d/m/Y') }}</td>
+            </tr>
+          @empty
+            <tr><td colspan="6" style="text-align:center;color:var(--muted);padding:1.5rem;">Aucun visiteur revenu plus d'une fois sur cette période.</td></tr>
+          @endforelse
         </tbody>
       </table>
     </div>
@@ -190,8 +225,8 @@
       datasets: [{
         label: 'Visiteurs',
         data: @json($evolutionMensuelle),
-        borderColor: '#2563eb', backgroundColor: 'rgba(37,99,235,0.1)',
-        borderWidth: 2.5, pointBackgroundColor: '#2563eb', pointRadius: 5, fill: true, tension: 0.4,
+        borderColor: '#8E2E8E', backgroundColor: 'rgba(142,46,142,0.1)',
+        borderWidth: 2.5, pointBackgroundColor: '#8E2E8E', pointRadius: 5, fill: true, tension: 0.4,
       }]
     },
     options: {
@@ -207,7 +242,7 @@
       labels: ['Élèves', 'Fonctionnaires', 'Externes'],
       datasets: [{
         data: [{{ $repartitionType['Élève'] }}, {{ $repartitionType['Fonctionnaire'] }}, {{ $repartitionType['Externe'] }}],
-        backgroundColor: ['#2563eb', '#c9a84c', '#10b981'],
+        backgroundColor: ['#8E2E8E', '#1FA24B', '#F5B301'],
         borderWidth: 3, borderColor: '#fff', hoverOffset: 8,
       }]
     },
@@ -223,7 +258,7 @@
       labels: @json($topEtablissements->pluck('nom')),
       datasets: [{
         data: @json($topEtablissements->pluck('visiteurs_count')),
-        backgroundColor: ['#2563eb', '#10b981', '#c9a84c', '#8b5cf6', '#f59e0b'],
+        backgroundColor: ['#8E2E8E', '#10b981', '#F5B301', '#8b5cf6', '#f59e0b'],
         borderRadius: 8, borderSkipped: false,
       }]
     },
@@ -239,8 +274,8 @@
     data: {
       labels: @json($moisLabels),
       datasets: [
-        { label: 'Garçons', data: @json($genreParMois->pluck('garcons')), backgroundColor: '#2563eb', borderRadius: 6 },
-        { label: 'Filles', data: @json($genreParMois->pluck('filles')), backgroundColor: '#c9a84c', borderRadius: 6 },
+        { label: 'Garçons', data: @json($genreParMois->pluck('garcons')), backgroundColor: '#8E2E8E', borderRadius: 6 },
+        { label: 'Filles', data: @json($genreParMois->pluck('filles')), backgroundColor: '#1FA24B', borderRadius: 6 },
       ]
     },
     options: {
