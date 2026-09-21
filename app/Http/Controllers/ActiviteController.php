@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Activite;
 use App\Models\JournalActivite;
+use App\Models\Media;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -26,6 +27,7 @@ class ActiviteController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $activite = Activite::create($this->validated($request));
+        $this->alimenterGalerie($request, $activite);
         JournalActivite::log('Ajout activité', $activite, $activite->titre);
 
         return redirect()->route('activites.index')->with('success', 'Activité ajoutée avec succès.');
@@ -39,6 +41,7 @@ class ActiviteController extends Controller
     public function update(Request $request, Activite $activite): RedirectResponse
     {
         $activite->update($this->validated($request, $activite));
+        $this->alimenterGalerie($request, $activite);
         JournalActivite::log('Modification activité', $activite, $activite->titre);
 
         return redirect()->route('activites.index')->with('success', 'Activité modifiée avec succès.');
@@ -67,10 +70,12 @@ class ActiviteController extends Controller
             'horaires' => ['nullable', 'string', 'max:60'],
             'lieu' => ['nullable', 'string', 'max:150'],
             'image' => ['nullable', 'image', 'max:10240'],
+            'video' => ['nullable', 'file', 'mimetypes:video/mp4,video/webm,video/quicktime', 'max:51200'],
+            'video_url' => ['nullable', 'url', 'max:255'],
         ]);
 
         $data['publie'] = $request->boolean('publie');
-        unset($data['image']);
+        unset($data['image'], $data['video'], $data['video_url']);
 
         if ($request->hasFile('image')) {
             if ($existante?->image_path) {
@@ -80,5 +85,32 @@ class ActiviteController extends Controller
         }
 
         return $data;
+    }
+
+    /** Les photos et vidéos ajoutées à une activité apparaissent aussi dans la galerie publique. */
+    private function alimenterGalerie(Request $request, Activite $activite): void
+    {
+        if ($request->hasFile('image') && $activite->image_path) {
+            $copie = 'medias/'.basename($activite->image_path);
+            Storage::disk('public')->copy($activite->image_path, $copie);
+            Media::create([
+                'titre' => $activite->titre,
+                'type' => 'photo',
+                'fichier_path' => $copie,
+                'activite_id' => $activite->id,
+                'publie' => $activite->publie,
+            ]);
+        }
+
+        if ($request->hasFile('video') || $request->filled('video_url')) {
+            Media::create([
+                'titre' => $activite->titre.' (vidéo)',
+                'type' => 'video',
+                'fichier_path' => $request->hasFile('video') ? $request->file('video')->store('medias', 'public') : null,
+                'video_url' => $request->hasFile('video') ? null : $request->input('video_url'),
+                'activite_id' => $activite->id,
+                'publie' => $activite->publie,
+            ]);
+        }
     }
 }

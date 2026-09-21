@@ -61,6 +61,19 @@
         <input class="form-control" type="file" name="image" accept="image/*"/>
         @error('image') <div class="field-error">{{ $message }}</div> @enderror
       </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Vidéo : lien YouTube ou Vimeo (optionnel)</label>
+          <input class="form-control" type="url" name="video_url" value="{{ old('video_url') }}" placeholder="https://www.youtube.com/watch?v=..."/>
+          @error('video_url') <div class="field-error">{{ $message }}</div> @enderror
+        </div>
+        <div class="form-group">
+          <label>…ou fichier vidéo (MP4/WebM, 50 Mo max)</label>
+          <input class="form-control" type="file" name="video" accept="video/mp4,video/webm,video/quicktime"/>
+          @error('video') <div class="field-error">{{ $message }}</div> @enderror
+        </div>
+      </div>
+      <p style="color:var(--muted);font-size:.82rem;margin:-6px 0 14px;">L'image et la vidéo ajoutées ici apparaissent aussi dans la galerie du site.</p>
       <div class="form-group">
         <label style="display:flex;gap:8px;align-items:center;">
           <input type="checkbox" name="publie" value="1" {{ old('publie', $activite->publie) ? 'checked' : '' }}/> Publier sur le site
