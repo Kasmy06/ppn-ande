@@ -28,6 +28,11 @@ class ParametreController extends Controller
                 'horaires' => ParametreApplication::get('horaires'),
                 'a_propos' => ParametreApplication::get('a_propos'),
                 'carte_url' => ParametreApplication::get('carte_url'),
+                'responsable' => ParametreApplication::get('responsable'),
+                'hebergeur' => ParametreApplication::get('hebergeur'),
+                'duree_conservation' => ParametreApplication::get('duree_conservation'),
+                'mentions_legales' => ParametreApplication::get('mentions_legales'),
+                'confidentialite' => ParametreApplication::get('confidentialite'),
             ],
             'visibilite' => collect(array_keys(SiteInfo::INFOS))
                 ->mapWithKeys(fn ($cle) => [$cle => SiteInfo::visible($cle)])
@@ -49,6 +54,11 @@ class ParametreController extends Controller
             'email' => ['nullable', 'email', 'max:150'],
             'horaires' => ['nullable', 'string', 'max:500'],
             'a_propos' => ['nullable', 'string', 'max:5000'],
+            'responsable' => ['nullable', 'string', 'max:200'],
+            'hebergeur' => ['nullable', 'string', 'max:300'],
+            'duree_conservation' => ['nullable', 'string', 'max:60'],
+            'mentions_legales' => ['nullable', 'string', 'max:10000'],
+            'confidentialite' => ['nullable', 'string', 'max:10000'],
             'carte_url' => ['nullable', 'url', 'max:1000', function ($attribute, $value, $fail) {
                 if ($value && ! SiteInfo::carteValide($value)) {
                     $fail('Collez l\'adresse « src » du code d\'intégration Google Maps (https://www.google.com/maps/embed?...) ou OpenStreetMap.');
@@ -56,7 +66,7 @@ class ParametreController extends Controller
             }],
         ]);
 
-        foreach (['adresse', 'telephones', 'email', 'horaires', 'a_propos', 'carte_url'] as $cle) {
+        foreach (['adresse', 'telephones', 'email', 'horaires', 'a_propos', 'carte_url', 'responsable', 'hebergeur', 'duree_conservation', 'mentions_legales', 'confidentialite'] as $cle) {
             ParametreApplication::set($cle, $data[$cle] ?? null);
         }
 

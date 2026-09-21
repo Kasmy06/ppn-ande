@@ -169,3 +169,11 @@ img { max-width: 100%; display: block; }
 .ag-evt.evenement { background: #fff3e0; color: #b45309; }
 .ag-evt.accompagnement { background: #e8ecfb; color: #3b4fbf; }
 @media (max-width: 820px) { .contact-grid { grid-template-columns: 1fr; } .contact-form .row2 { grid-template-columns: 1fr; } }
+
+/* Pages légales */
+.legal { max-width: 820px; }
+.legal h2 { font-size: 1.15rem; color: var(--violet); margin: 26px 0 8px; }
+.legal p { margin-bottom: 10px; }
+.contact-form .consent label { display: flex; gap: 8px; align-items: flex-start; font-weight: 400; font-size: .85rem; }
+.contact-form .consent input { width: auto; margin-top: 4px; }
+.copy a { color: #d9b6e0; }

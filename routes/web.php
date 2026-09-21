@@ -23,6 +23,10 @@ Route::get('/activites', [SiteController::class, 'activites'])->name('site.activ
 Route::get('/galerie', [SiteController::class, 'galerie'])->name('site.galerie');
 Route::get('/agenda', [SiteController::class, 'agenda'])->name('site.agenda');
 Route::get('/a-propos', [SiteController::class, 'aPropos'])->name('site.a-propos');
+Route::get('/mentions-legales', [SiteController::class, 'mentions'])->name('site.mentions');
+Route::get('/confidentialite', [SiteController::class, 'confidentialite'])->name('site.confidentialite');
+Route::get('/sitemap.xml', [SiteController::class, 'sitemap'])->name('site.sitemap');
+Route::get('/robots.txt', [SiteController::class, 'robots'])->name('site.robots');
 Route::get('/contact', [SiteController::class, 'contact'])->name('site.contact');
 Route::post('/contact', [SiteController::class, 'envoyerContact'])->middleware('throttle:5,10')->name('site.contact.envoyer');
 Route::get('/activites/{activite}', [SiteController::class, 'activite'])->whereNumber('activite')->name('site.activite');

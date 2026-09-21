@@ -25,6 +25,8 @@ class SiteInfo
         'agenda' => 'Agenda',
         'galerie' => 'Galerie photos & vidéos',
         'contact' => 'Contact (formulaire et coordonnées)',
+        'mentions' => 'Mentions légales',
+        'confidentialite' => 'Politique de confidentialité',
     ];
 
     /** Une information/page est visible tant que l'équipe ne l'a pas explicitement masquée. */
@@ -67,6 +69,32 @@ class SiteInfo
     public static function horaires(): ?string
     {
         return self::visible('horaires') ? (ParametreApplication::get('horaires') ?: null) : null;
+    }
+
+    public static function nom(): string
+    {
+        return ParametreApplication::get('nom_structure', "PPN d'Andé");
+    }
+
+    public static function responsable(): ?string
+    {
+        return ParametreApplication::get('responsable') ?: null;
+    }
+
+    public static function hebergeur(): ?string
+    {
+        return ParametreApplication::get('hebergeur') ?: null;
+    }
+
+    /** Texte juridique personnalisé (remplace le texte type) : 'mentions_legales' ou 'confidentialite'. */
+    public static function texte(string $cle): ?string
+    {
+        return ParametreApplication::get($cle) ?: null;
+    }
+
+    public static function dureeConservation(): string
+    {
+        return ParametreApplication::get('duree_conservation') ?: '12 mois';
     }
 
     public static function aPropos(): ?string

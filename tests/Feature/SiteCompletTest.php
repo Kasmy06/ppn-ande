@@ -45,8 +45,9 @@ class SiteCompletTest extends TestCase
 
     public function test_contact_form_stores_message_and_blocks_bots(): void
     {
-        $donnees = ['nom' => 'Awa', 'email' => 'awa@example.ci', 'sujet' => 'Inscription', 'message' => "Bonjour, je souhaite m'inscrire."];
+        $donnees = ['nom' => 'Awa', 'email' => 'awa@example.ci', 'sujet' => 'Inscription', 'message' => "Bonjour, je souhaite m'inscrire.", 'consentement' => 1];
 
+        $this->post('/contact', array_diff_key($donnees, ['consentement' => 1]))->assertSessionHasErrors('consentement');
         $this->post('/contact', $donnees)->assertRedirect('/contact');
         $this->assertDatabaseHas('messages_contact', ['nom' => 'Awa', 'lu' => false]);
 

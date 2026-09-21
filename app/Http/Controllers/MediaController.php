@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Activite;
 use App\Models\JournalActivite;
 use App\Models\Media;
+use App\Support\ImageOptimizer;
+use App\Support\Notifier;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -31,7 +33,8 @@ class MediaController extends Controller
             return $this->storeLot($request, $photos);
         }
 
-        $media = Media::create($this->validated($request));
+        $media = Media::create($this->validated($request) + ['a_valider' => ! $this->peutPublier($request)]);
+        $this->prevenirSiAValider($request, $media);
         JournalActivite::log('Ajout média', $media, $media->titre);
 
         return redirect()->route('medias.index')->with('success', 'Média ajouté avec succès.');
@@ -55,7 +58,8 @@ class MediaController extends Controller
                 'legende' => $request->input('legende'),
                 'activite_id' => $request->input('activite_id') ?: null,
                 'publie' => $this->peutPublier($request) && $request->boolean('publie'),
-                'fichier_path' => $fichier->store('medias', 'public'),
+                'fichier_path' => ImageOptimizer::stocker($fichier, 'medias'),
+                'a_valider' => ! $this->peutPublier($request),
             ]);
             JournalActivite::log('Ajout média', $media, $media->titre);
         }
@@ -70,7 +74,7 @@ class MediaController extends Controller
 
     public function update(Request $request, Media $media): RedirectResponse
     {
-        $media->update($this->validated($request, $media));
+        $media->update($this->validated($request, $media) + ['a_valider' => false]);
         JournalActivite::log('Modification média', $media, $media->titre);
 
         return redirect()->route('medias.index')->with('success', 'Média modifié avec succès.');
@@ -96,10 +100,17 @@ class MediaController extends Controller
 
     public function basculerPublication(Media $media): RedirectResponse
     {
-        $media->update(['publie' => ! $media->publie]);
+        $media->update(['publie' => ! $media->publie, 'a_valider' => false]);
         JournalActivite::log($media->publie ? 'Publication média' : 'Retrait média du site', $media, $media->titre);
 
         return back()->with('success', $media->publie ? 'Média publié dans la galerie.' : 'Média retiré de la galerie (brouillon).');
+    }
+
+    private function prevenirSiAValider(Request $request, Media $media): void
+    {
+        if ($media->a_valider) {
+            Notifier::superAdmins('Nouveau média à valider', "{$request->user()->name} a ajouté le média « {$media->titre} » (brouillon). Il sera visible dans la galerie publique une fois publié par un Super Admin.");
+        }
     }
 
     private function activites()
@@ -144,7 +155,7 @@ class MediaController extends Controller
             if ($existant?->fichier_path) {
                 Storage::disk('public')->delete($existant->fichier_path);
             }
-            $sortie['fichier_path'] = $fichier->store('medias', 'public');
+            $sortie['fichier_path'] = $type === 'photo' ? ImageOptimizer::stocker($fichier, 'medias') : $fichier->store('medias', 'public');
         } elseif ($existant && $existant->type !== $type && $existant->fichier_path) {
             Storage::disk('public')->delete($existant->fichier_path);
             $sortie['fichier_path'] = null;

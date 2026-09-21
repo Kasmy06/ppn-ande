@@ -11,9 +11,9 @@ class Media extends Model
 {
     protected $table = 'medias';
 
-    protected $fillable = ['titre', 'type', 'legende', 'fichier_path', 'video_url', 'activite_id', 'publie', 'auto'];
+    protected $fillable = ['titre', 'type', 'legende', 'fichier_path', 'video_url', 'activite_id', 'publie', 'auto', 'a_valider'];
 
-    protected $casts = ['publie' => 'boolean'];
+    protected $casts = ['publie' => 'boolean', 'a_valider' => 'boolean'];
 
     public function activite(): BelongsTo
     {

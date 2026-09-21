@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Activite;
 use App\Models\Media;
 use App\Models\MessageContact;
+use App\Support\Notifier;
 use App\Support\SiteInfo;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\View\View;
 
 class SiteController extends Controller
@@ -121,6 +123,43 @@ class SiteController extends Controller
         return view('site.a-propos');
     }
 
+    public function mentions(): View
+    {
+        abort_unless(SiteInfo::page('mentions'), 404);
+
+        return view('site.mentions');
+    }
+
+    public function confidentialite(): View
+    {
+        abort_unless(SiteInfo::page('confidentialite'), 404);
+
+        return view('site.confidentialite');
+    }
+
+    public function sitemap(): Response
+    {
+        $urls = [['loc' => route('site.accueil')], ['loc' => route('site.activites')]];
+        foreach (['a_propos' => 'site.a-propos', 'agenda' => 'site.agenda', 'galerie' => 'site.galerie', 'contact' => 'site.contact',
+                  'mentions' => 'site.mentions', 'confidentialite' => 'site.confidentialite'] as $page => $route) {
+            if (SiteInfo::page($page)) {
+                $urls[] = ['loc' => route($route)];
+            }
+        }
+        foreach (Activite::publie()->orderByDesc('date_debut')->get(['id', 'updated_at']) as $a) {
+            $urls[] = ['loc' => route('site.activite', $a), 'lastmod' => $a->updated_at->toDateString()];
+        }
+
+        return response()->view('site.sitemap', compact('urls'))->header('Content-Type', 'application/xml');
+    }
+
+    public function robots(): Response
+    {
+        $texte = "User-agent: *\nDisallow: /dashboard\nDisallow: /gestion-\nDisallow: /parametres\nDisallow: /messages\nDisallow: /login\n\nSitemap: ".route('site.sitemap')."\n";
+
+        return response($texte, 200, ['Content-Type' => 'text/plain; charset=UTF-8']);
+    }
+
     public function contact(): View
     {
         abort_unless(SiteInfo::page('contact'), 404);
@@ -138,11 +177,13 @@ class SiteController extends Controller
             'telephone' => ['nullable', 'string', 'max:30'],
             'sujet' => ['required', 'string', 'max:150'],
             'message' => ['required', 'string', 'min:10', 'max:3000'],
+            'consentement' => ['accepted'],
             'website' => ['nullable', 'max:0'], // champ piège : rempli uniquement par les robots
         ]);
-        unset($data['website']);
+        unset($data['website'], $data['consentement']);
 
-        MessageContact::create($data);
+        $message = MessageContact::create($data);
+        Notifier::superAdmins('Nouveau message de contact', "De : {$message->nom} <{$message->email}>".($message->telephone ? " — {$message->telephone}" : '')."\nSujet : {$message->sujet}\n\n{$message->message}");
 
         return redirect()->route('site.contact')->with('envoye', true);
     }

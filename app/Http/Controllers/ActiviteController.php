@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Activite;
 use App\Models\JournalActivite;
 use App\Models\Media;
+use App\Support\ImageOptimizer;
+use App\Support\Notifier;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -26,9 +28,12 @@ class ActiviteController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $activite = Activite::create($this->validated($request));
+        $activite = Activite::create($this->validated($request) + ['a_valider' => ! $this->estAdmin($request)]);
         $this->alimenterGalerie($request, $activite);
         JournalActivite::log('Ajout activité', $activite, $activite->titre);
+        if ($activite->a_valider) {
+            Notifier::superAdmins('Nouvelle activité à valider', "{$request->user()->name} a ajouté l'activité « {$activite->titre} » (brouillon). Elle sera visible du public une fois publiée par un Super Admin.");
+        }
 
         return redirect()->route('activites.index')->with('success', 'Activité ajoutée avec succès.');
     }
@@ -40,7 +45,7 @@ class ActiviteController extends Controller
 
     public function update(Request $request, Activite $activite): RedirectResponse
     {
-        $activite->update($this->validated($request, $activite));
+        $activite->update($this->validated($request, $activite) + ['a_valider' => false]);
         $activite->medias()->where('auto', true)->update(['publie' => $activite->publie]);
         $this->alimenterGalerie($request, $activite);
         JournalActivite::log('Modification activité', $activite, $activite->titre);
@@ -51,8 +56,14 @@ class ActiviteController extends Controller
     /** Publie ou retire du site public en un clic (la copie de couverture dans la galerie suit). */
     public function basculerPublication(Activite $activite): RedirectResponse
     {
-        $activite->update(['publie' => ! $activite->publie]);
-        $activite->medias()->where('auto', true)->update(['publie' => $activite->publie]);
+        $activite->update(['publie' => ! $activite->publie, 'a_valider' => false]);
+        if ($activite->publie) {
+            // Publier une activité publie aussi ce qui a été soumis avec elle (couverture, photos, vidéo).
+            $activite->medias()->where(fn ($q) => $q->where('auto', true)->orWhere('a_valider', true))
+                ->update(['publie' => true, 'a_valider' => false]);
+        } else {
+            $activite->medias()->where('auto', true)->update(['publie' => false]);
+        }
         JournalActivite::log($activite->publie ? 'Publication activité' : 'Retrait activité du site', $activite, $activite->titre);
 
         return back()->with('success', $activite->publie ? 'Activité publiée sur le site.' : 'Activité retirée du site (brouillon).');
@@ -97,7 +108,7 @@ class ActiviteController extends Controller
             if ($existante?->image_path) {
                 Storage::disk('public')->delete($existante->image_path);
             }
-            $data['image_path'] = $request->file('image')->store('activites', 'public');
+            $data['image_path'] = ImageOptimizer::stocker($request->file('image'), 'activites');
         }
 
         return $data;
@@ -125,9 +136,10 @@ class ActiviteController extends Controller
             Media::create([
                 'titre' => $activite->titre.' – photo '.($i + 1),
                 'type' => 'photo',
-                'fichier_path' => $photo->store('medias', 'public'),
+                'fichier_path' => ImageOptimizer::stocker($photo, 'medias'),
                 'activite_id' => $activite->id,
                 'publie' => $activite->publie,
+                'a_valider' => $activite->a_valider,
             ]);
         }
 
@@ -139,8 +151,14 @@ class ActiviteController extends Controller
                 'video_url' => $request->hasFile('video') ? null : $request->input('video_url'),
                 'activite_id' => $activite->id,
                 'publie' => $activite->publie,
+                'a_valider' => $activite->a_valider,
             ]);
         }
+    }
+
+    private function estAdmin(Request $request): bool
+    {
+        return (bool) $request->user()?->isSuperAdmin();
     }
 
     private function supprimerCopiesAuto(Activite $activite): void

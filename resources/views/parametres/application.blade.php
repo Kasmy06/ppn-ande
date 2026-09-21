@@ -108,6 +108,35 @@
         @error('carte_url') <div class="field-error">{{ $message }}</div> @enderror
       </div>
 
+      <hr style="border:0;border-top:1px solid var(--border);margin:1.5rem 0;">
+      <div style="font-weight:700;margin-bottom:0.25rem;">Pages légales</div>
+      <p style="font-size:0.78rem;color:var(--muted);margin-bottom:1rem;">Les pages « Mentions légales » et « Politique de confidentialité » utilisent un <strong>texte type</strong> (loi ivoirienne n° 2013-450) complété par les informations ci-dessous. Faites-le relire par la personne responsable du PPN avant l'ouverture au public. Vous pouvez aussi le remplacer entièrement par votre propre texte.</p>
+      <div class="form-group">
+        <label>Responsable de la publication / du traitement des données</label>
+        <input class="form-control" type="text" name="responsable" value="{{ old('responsable', $contact['responsable']) }}" placeholder="Nom et fonction"/>
+        @error('responsable') <div class="field-error">{{ $message }}</div> @enderror
+      </div>
+      <div class="form-group">
+        <label>Hébergeur du site</label>
+        <input class="form-control" type="text" name="hebergeur" value="{{ old('hebergeur', $contact['hebergeur']) }}" placeholder="Nom et adresse de l'hébergeur"/>
+        @error('hebergeur') <div class="field-error">{{ $message }}</div> @enderror
+      </div>
+      <div class="form-group">
+        <label>Durée de conservation des messages</label>
+        <input class="form-control" type="text" name="duree_conservation" value="{{ old('duree_conservation', $contact['duree_conservation']) }}" placeholder="12 mois"/>
+        @error('duree_conservation') <div class="field-error">{{ $message }}</div> @enderror
+      </div>
+      <div class="form-group">
+        <label>Texte personnalisé des mentions légales (optionnel, remplace le texte type)</label>
+        <textarea class="form-control" name="mentions_legales" rows="4">{{ old('mentions_legales', $contact['mentions_legales']) }}</textarea>
+        @error('mentions_legales') <div class="field-error">{{ $message }}</div> @enderror
+      </div>
+      <div class="form-group">
+        <label>Texte personnalisé de la politique de confidentialité (optionnel, remplace le texte type)</label>
+        <textarea class="form-control" name="confidentialite" rows="4">{{ old('confidentialite', $contact['confidentialite']) }}</textarea>
+        @error('confidentialite') <div class="field-error">{{ $message }}</div> @enderror
+      </div>
+
       <button type="submit" class="btn btn-primary" style="margin-top:0.5rem;"><i class="fas fa-save"></i> Enregistrer</button>
     </form>
   </div>

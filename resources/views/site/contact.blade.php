@@ -73,6 +73,14 @@
           <textarea id="message" name="message" rows="6" required minlength="10" maxlength="3000">{{ old('message') }}</textarea>
           @error('message')<div class="err">{{ $message }}</div>@enderror
         </div>
+        <div class="field consent">
+          <label>
+            <input type="checkbox" name="consentement" value="1" {{ old('consentement') ? 'checked' : '' }} required/>
+            <span>J'accepte que mes données soient utilisées pour répondre à ma demande
+            @if (SiteInfo::page('confidentialite'))(<a href="{{ route('site.confidentialite') }}" target="_blank">politique de confidentialité</a>)@endif.</span>
+          </label>
+          @error('consentement')<div class="err">{{ $message }}</div>@enderror
+        </div>
         <button class="btn btn-green" type="submit"><i class="fas fa-paper-plane"></i> Envoyer le message</button>
       </form>
     </div>

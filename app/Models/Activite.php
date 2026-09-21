@@ -17,13 +17,14 @@ class Activite extends Model
 
     protected $fillable = [
         'titre', 'categorie', 'description', 'date_debut', 'date_fin',
-        'horaires', 'lieu', 'image_path', 'publie',
+        'horaires', 'lieu', 'image_path', 'publie', 'a_valider',
     ];
 
     protected $casts = [
         'date_debut' => 'date',
         'date_fin' => 'date',
         'publie' => 'boolean',
+        'a_valider' => 'boolean',
     ];
 
     public function medias(): HasMany

@@ -78,7 +78,7 @@
       <p><a href="{{ route('site.activites') }}">Activités</a>@if (SiteInfo::page('agenda')) · <a href="{{ route('site.agenda') }}">Agenda</a>@endif<br>@if (SiteInfo::page('galerie'))<a href="{{ route('site.galerie') }}">Galerie</a>@endif @if (SiteInfo::page('a_propos')) · <a href="{{ route('site.a-propos') }}">À propos</a>@endif<br><a href="{{ route('login') }}">Espace équipe</a></p>
     </div>
   </div>
-  <div class="copy">© {{ date('Y') }} {{ $nomStructure }}</div>
+  <div class="copy">© {{ date('Y') }} {{ $nomStructure }}@if (SiteInfo::page('mentions')) · <a href="{{ route('site.mentions') }}">Mentions légales</a>@endif @if (SiteInfo::page('confidentialite')) · <a href="{{ route('site.confidentialite') }}">Confidentialité</a>@endif</div>
 </footer>
 <div class="lightbox" id="lightbox" hidden>
   <button type="button" class="lb-close" aria-label="Fermer">&times;</button>

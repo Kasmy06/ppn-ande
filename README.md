@@ -48,6 +48,18 @@ dans **Messages**.
 - Dans **Paramètres > Application > « Ce que le public peut voir »**, chaque page (À propos, Agenda, Galerie, Contact) et chaque
   information de contact (adresse, téléphones, e-mail, horaires, carte) peut être masquée sans être effacée.
 
+### Validation, notifications et pages légales
+
+- Ce qu'un agent ajoute est marqué **« à valider »** : un badge apparaît dans le menu du Super Admin et un **e-mail** lui est envoyé
+  (il part réellement dès qu'un fournisseur SMTP est configuré ; avec `MAIL_MAILER=log` il est seulement écrit dans `storage/logs`).
+  Un échec d'envoi ne bloque jamais l'action de l'utilisateur. Publier une activité publie aussi les photos et vidéos soumises avec elle.
+- Chaque nouveau message du formulaire de contact déclenche aussi un e-mail aux Super Admin.
+- Les photos téléversées sont **redimensionnées** (1600 px max) et recompressées automatiquement (orientation des photos de téléphone respectée).
+- Pages **Mentions légales** et **Politique de confidentialité** : texte type (loi ivoirienne n° 2013-450, ARTCI) complété depuis
+  Paramètres > Application. **À faire relire par le responsable du PPN**, ou à remplacer par le texte officiel dans les mêmes réglages.
+  Le formulaire de contact exige le consentement de l'utilisateur.
+- `/sitemap.xml` et `/robots.txt` sont générés automatiquement (uniquement les pages et activités publiques).
+
 ## Mise en production
 
 1. Partir de `.env.production.example` : `APP_ENV=production`, `APP_DEBUG=false`, `SESSION_SECURE_COOKIE=true` (HTTPS), compte MySQL dédié.

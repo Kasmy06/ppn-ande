@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'accepted' => 'Vous devez accepter :attribute pour continuer.',
     'array' => 'Le champ :attribute doit être une liste.',
     'after_or_equal' => 'Le champ :attribute doit être une date postérieure ou égale au :date.',
     'boolean' => 'Le champ :attribute doit être vrai ou faux.',
@@ -34,6 +35,7 @@ return [
     ],
 
     'attributes' => [
+        'consentement' => 'la politique de confidentialité',
         'titre' => 'titre',
         'description' => 'description',
         'image' => 'image',

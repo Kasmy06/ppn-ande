@@ -52,9 +52,15 @@
     </a>
     <a class="nav-item {{ request()->routeIs('activites.*') ? 'active' : '' }}" href="{{ route('activites.index') }}">
       <i class="fas fa-bullhorn"></i> Activités (site)
+      @if (auth()->user()->isSuperAdmin() && ($activitesAValider = \App\Models\Activite::where('a_valider', true)->count()) > 0)
+        <span class="nav-badge" title="À valider">{{ $activitesAValider }}</span>
+      @endif
     </a>
     <a class="nav-item {{ request()->routeIs('medias.*') ? 'active' : '' }}" href="{{ route('medias.index') }}">
       <i class="fas fa-photo-film"></i> Photos & vidéos
+      @if (auth()->user()->isSuperAdmin() && ($mediasAValider = \App\Models\Media::where('a_valider', true)->where('auto', false)->count()) > 0)
+        <span class="nav-badge" title="À valider">{{ $mediasAValider }}</span>
+      @endif
     </a>
     <a class="nav-item {{ request()->routeIs('messages.*') ? 'active' : '' }}" href="{{ route('messages.index') }}">
       <i class="fas fa-inbox"></i> Messages
