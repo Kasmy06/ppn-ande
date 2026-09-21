@@ -51,9 +51,8 @@
       <div class="footer-title">Contact</div>
       <p>
         @if ($adresse = \App\Models\ParametreApplication::get('adresse'))<i class="fas fa-location-dot"></i> {{ $adresse }}<br>@endif
-        @if ($tel = \App\Models\ParametreApplication::get('telephone'))<i class="fas fa-phone"></i> {{ $tel }}<br>@endif
+        @foreach (config('site.telephones') as $tel)<i class="fas fa-phone"></i> <a href="tel:{{ preg_replace('/\s+/', '', $tel) }}">{{ $tel }}</a><br>@endforeach
         @if ($mail = \App\Models\ParametreApplication::get('email'))<i class="fas fa-envelope"></i> <a href="mailto:{{ $mail }}">{{ $mail }}</a>@endif
-        @if (! ($adresse ?? null) && ! ($tel ?? null) && ! ($mail ?? null))Andé — renseignez-vous auprès de l'équipe.@endif
       </p>
     </div>
     <div>
