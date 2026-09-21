@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\ActiviteController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\MediaController;
+use App\Http\Controllers\SiteController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EtablissementController;
 use App\Http\Controllers\ExportController;
@@ -14,7 +17,10 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\VisiteurController;
 use Illuminate\Support\Facades\Route;
 
-Route::redirect('/', '/login');
+Route::get('/', [SiteController::class, 'accueil'])->name('site.accueil');
+Route::get('/activites', [SiteController::class, 'activites'])->name('site.activites');
+Route::get('/galerie', [SiteController::class, 'galerie'])->name('site.galerie');
+Route::get('/activites/{activite}', [SiteController::class, 'activite'])->whereNumber('activite')->name('site.activite');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -53,8 +59,18 @@ Route::middleware('auth')->group(function () {
     Route::get('/profil', [ProfilController::class, 'edit'])->name('profil.edit');
     Route::put('/profil', [ProfilController::class, 'update'])->name('profil.update');
 
+    // Photos & vidéos : consultation et ajout ouverts à l'équipe (modification/suppression : Super Admin).
+    Route::get('/gestion-medias', [MediaController::class, 'index'])->name('medias.index');
+    Route::get('/gestion-medias/create', [MediaController::class, 'create'])->name('medias.create');
+    Route::post('/gestion-medias', [MediaController::class, 'store'])->name('medias.store');
+
     // Actions réservées au Super Admin.
     Route::middleware('role:super_admin')->group(function () {
+        Route::resource('gestion-activites', ActiviteController::class)
+            ->except('show')->parameters(['gestion-activites' => 'activite'])->names('activites');
+        Route::resource('gestion-medias', MediaController::class)
+            ->only(['edit', 'update', 'destroy'])->parameters(['gestion-medias' => 'media'])->names('medias');
+
         Route::delete('/visiteurs/{visiteur}', [VisiteurController::class, 'destroy'])->name('visiteurs.destroy');
 
         Route::post('/etablissements', [EtablissementController::class, 'store'])->name('etablissements.store');

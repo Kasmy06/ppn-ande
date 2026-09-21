@@ -49,6 +49,14 @@
     <a class="nav-item {{ request()->routeIs('etablissements.*') ? 'active' : '' }}" href="{{ route('etablissements.index') }}">
       <i class="fas fa-school"></i> Établissements
     </a>
+    @if (auth()->user()->isSuperAdmin())
+      <a class="nav-item {{ request()->routeIs('activites.*') ? 'active' : '' }}" href="{{ route('activites.index') }}">
+        <i class="fas fa-bullhorn"></i> Activités (site)
+      </a>
+    @endif
+    <a class="nav-item {{ request()->routeIs('medias.*') ? 'active' : '' }}" href="{{ route('medias.index') }}">
+      <i class="fas fa-photo-film"></i> Photos & vidéos
+    </a>
     <a class="nav-item {{ request()->routeIs('calendrier.*') ? 'active' : '' }}" href="{{ route('calendrier.index') }}">
       <i class="fas fa-calendar-days"></i> Calendrier
     </a>
