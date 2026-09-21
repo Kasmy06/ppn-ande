@@ -77,6 +77,9 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:super_admin')->group(function () {
         Route::delete('/messages/{message}', [MessageController::class, 'destroy'])->name('messages.destroy');
 
+        Route::patch('/gestion-activites/{activite}/publication', [ActiviteController::class, 'basculerPublication'])->name('activites.publication');
+        Route::patch('/gestion-medias/{media}/publication', [MediaController::class, 'basculerPublication'])->name('medias.publication');
+
         Route::resource('gestion-activites', ActiviteController::class)
             ->except('show')->parameters(['gestion-activites' => 'activite'])->names('activites');
         Route::resource('gestion-medias', MediaController::class)

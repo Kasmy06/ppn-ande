@@ -32,13 +32,15 @@
       </div>
     </div>
 
+    @if ($horaires || \App\Support\SiteInfo::page('contact'))
     <aside class="aside-box">
       <h3>Nous rejoindre</h3>
       @if ($horaires)
         <ul><li><i class="fas fa-clock"></i><div><span>Horaires</span><span style="white-space:pre-line;color:var(--text);font-size:.92rem">{{ $horaires }}</span></div></li></ul>
       @endif
-      <a class="btn btn-green" href="{{ route('site.contact') }}" style="width:100%;justify-content:center"><i class="fas fa-envelope"></i> Nous contacter</a>
+      @if (\App\Support\SiteInfo::page('contact'))<a class="btn btn-green" href="{{ route('site.contact') }}" style="width:100%;justify-content:center"><i class="fas fa-envelope"></i> Nous contacter</a>@endif
     </aside>
+    @endif
   </div>
 </section>
 @endsection

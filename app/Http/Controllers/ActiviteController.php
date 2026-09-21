@@ -21,7 +21,7 @@ class ActiviteController extends Controller
 
     public function create(): View
     {
-        return view('activites.form', ['activite' => new Activite(['publie' => true, 'categorie' => 'atelier'])]);
+        return view('activites.form', ['activite' => new Activite(['publie' => false, 'categorie' => 'atelier'])]);
     }
 
     public function store(Request $request): RedirectResponse
@@ -41,10 +41,21 @@ class ActiviteController extends Controller
     public function update(Request $request, Activite $activite): RedirectResponse
     {
         $activite->update($this->validated($request, $activite));
+        $activite->medias()->where('auto', true)->update(['publie' => $activite->publie]);
         $this->alimenterGalerie($request, $activite);
         JournalActivite::log('Modification activité', $activite, $activite->titre);
 
         return redirect()->route('activites.index')->with('success', 'Activité modifiée avec succès.');
+    }
+
+    /** Publie ou retire du site public en un clic (la copie de couverture dans la galerie suit). */
+    public function basculerPublication(Activite $activite): RedirectResponse
+    {
+        $activite->update(['publie' => ! $activite->publie]);
+        $activite->medias()->where('auto', true)->update(['publie' => $activite->publie]);
+        JournalActivite::log($activite->publie ? 'Publication activité' : 'Retrait activité du site', $activite, $activite->titre);
+
+        return back()->with('success', $activite->publie ? 'Activité publiée sur le site.' : 'Activité retirée du site (brouillon).');
     }
 
     public function destroy(Activite $activite): RedirectResponse

@@ -44,11 +44,11 @@
     <button class="menu-toggle" type="button" aria-label="Menu" onclick="document.querySelector('.site-nav').classList.toggle('open')"><i class="fas fa-bars"></i></button>
     <nav class="site-nav">
       <a href="{{ route('site.accueil') }}" class="{{ request()->routeIs('site.accueil') ? 'active' : '' }}">Accueil</a>
-      <a href="{{ route('site.a-propos') }}" class="{{ request()->routeIs('site.a-propos') ? 'active' : '' }}">À propos</a>
+      @if (SiteInfo::page('a_propos'))<a href="{{ route('site.a-propos') }}" class="{{ request()->routeIs('site.a-propos') ? 'active' : '' }}">À propos</a>@endif
       <a href="{{ route('site.activites') }}" class="{{ request()->routeIs('site.activite*') ? 'active' : '' }}">Activités</a>
-      <a href="{{ route('site.agenda') }}" class="{{ request()->routeIs('site.agenda') ? 'active' : '' }}">Agenda</a>
-      <a href="{{ route('site.galerie') }}" class="{{ request()->routeIs('site.galerie') ? 'active' : '' }}">Galerie</a>
-      <a href="{{ route('site.contact') }}" class="{{ request()->routeIs('site.contact') ? 'active' : '' }}">Contact</a>
+      @if (SiteInfo::page('agenda'))<a href="{{ route('site.agenda') }}" class="{{ request()->routeIs('site.agenda') ? 'active' : '' }}">Agenda</a>@endif
+      @if (SiteInfo::page('galerie'))<a href="{{ route('site.galerie') }}" class="{{ request()->routeIs('site.galerie') ? 'active' : '' }}">Galerie</a>@endif
+      @if (SiteInfo::page('contact'))<a href="{{ route('site.contact') }}" class="{{ request()->routeIs('site.contact') ? 'active' : '' }}">Contact</a>@endif
       <a href="{{ auth()->check() ? route('dashboard') : route('login') }}" class="nav-cta"><i class="fas fa-lock"></i> Espace équipe</a>
     </nav>
   </div>
@@ -62,18 +62,20 @@
       <div class="footer-title">{{ $nomStructure }}</div>
       <p>Un lieu d'accès libre au numérique : formations, ateliers et accompagnement pour tous.</p>
     </div>
+    @if (SiteInfo::adresse() || SiteInfo::email() || SiteInfo::telephones() || SiteInfo::page('contact'))
     <div>
       <div class="footer-title">Contact</div>
       <p>
         @if ($adresse = SiteInfo::adresse())<i class="fas fa-location-dot"></i> {{ $adresse }}<br>@endif
         @foreach (SiteInfo::telephones() as $tel)<i class="fas fa-phone"></i> <a href="{{ SiteInfo::lienTel($tel) }}">{{ $tel }}</a><br>@endforeach
         @if ($mail = SiteInfo::email())<i class="fas fa-envelope"></i> <a href="mailto:{{ $mail }}">{{ $mail }}</a><br>@endif
-        <a href="{{ route('site.contact') }}">Nous écrire <i class="fas fa-arrow-right"></i></a>
+        @if (SiteInfo::page('contact'))<a href="{{ route('site.contact') }}">Nous écrire <i class="fas fa-arrow-right"></i></a>@endif
       </p>
     </div>
+    @endif
     <div>
       <div class="footer-title">Navigation</div>
-      <p><a href="{{ route('site.activites') }}">Activités</a> · <a href="{{ route('site.agenda') }}">Agenda</a><br><a href="{{ route('site.galerie') }}">Galerie</a> · <a href="{{ route('site.a-propos') }}">À propos</a><br><a href="{{ route('login') }}">Espace équipe</a></p>
+      <p><a href="{{ route('site.activites') }}">Activités</a>@if (SiteInfo::page('agenda')) · <a href="{{ route('site.agenda') }}">Agenda</a>@endif<br>@if (SiteInfo::page('galerie'))<a href="{{ route('site.galerie') }}">Galerie</a>@endif @if (SiteInfo::page('a_propos')) · <a href="{{ route('site.a-propos') }}">À propos</a>@endif<br><a href="{{ route('login') }}">Espace équipe</a></p>
     </div>
   </div>
   <div class="copy">© {{ date('Y') }} {{ $nomStructure }}</div>

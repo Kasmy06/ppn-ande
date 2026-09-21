@@ -27,7 +27,18 @@
               <td><strong>{{ $m->titre }}</strong></td>
               <td><span class="badge badge-{{ $m->type === 'photo' ? 'blue' : 'purple' }}">{{ $m->type === 'photo' ? 'Photo' : 'Vidéo' }}</span></td>
               <td>{{ $m->activite?->titre ?? '—' }}</td>
-              <td><span class="badge badge-{{ $m->publie ? 'green' : 'orange' }}">{{ $m->publie ? 'Publié' : 'Brouillon' }}</span></td>
+              <td>
+                @if (auth()->user()->isSuperAdmin())
+                  <form method="POST" action="{{ route('medias.publication', $m) }}" style="display:inline">
+                    @csrf @method('PATCH')
+                    <button class="btn btn-sm {{ $m->publie ? 'btn-outline' : 'btn-primary' }}" title="{{ $m->publie ? 'Retirer de la galerie publique' : 'Rendre visible dans la galerie publique' }}">
+                      <i class="fas {{ $m->publie ? 'fa-eye' : 'fa-eye-slash' }}"></i> {{ $m->publie ? 'Publié · Retirer' : 'Brouillon · Publier' }}
+                    </button>
+                  </form>
+                @else
+                  <span class="badge badge-{{ $m->publie ? 'green' : 'orange' }}">{{ $m->publie ? 'Publié' : 'En attente de validation' }}</span>
+                @endif
+              </td>
               <td>
                 @if (auth()->user()->isSuperAdmin())
                 <div class="action-btns">

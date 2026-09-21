@@ -51,6 +51,31 @@
       <div style="font-weight:700;margin-bottom:0.25rem;">Site public : contact et présentation</div>
       <p style="font-size:0.78rem;color:var(--muted);margin-bottom:1rem;">Ces informations s'affichent sur le site public (pages Contact, À propos et pied de page). Un champ vide n'est pas affiché.</p>
 
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:1rem 1.25rem;margin-bottom:1.25rem;">
+        <div style="font-weight:600;margin-bottom:0.5rem;"><i class="fas fa-eye"></i> Ce que le public peut voir</div>
+        <p style="font-size:0.75rem;color:var(--muted);margin-bottom:0.75rem;">Décochez pour masquer sans effacer : l'information reste enregistrée et pourra être réaffichée à tout moment.</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:0.5rem 1.5rem;">
+          <div>
+            <div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin-bottom:0.35rem;">Pages</div>
+            @foreach (\App\Support\SiteInfo::PAGES as $cle => $label)
+              <input type="hidden" name="visible_page_{{ $cle }}" value="0">
+              <label style="display:flex;gap:8px;align-items:center;margin-bottom:0.35rem;font-weight:400;">
+                <input type="checkbox" name="visible_page_{{ $cle }}" value="1" {{ old('visible_page_'.$cle, $pagesActives[$cle] ? '1' : '0') === '1' ? 'checked' : '' }}/> {{ $label }}
+              </label>
+            @endforeach
+          </div>
+          <div>
+            <div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin-bottom:0.35rem;">Informations de contact</div>
+            @foreach (\App\Support\SiteInfo::INFOS as $cle => $label)
+              <input type="hidden" name="visible_{{ $cle }}" value="0">
+              <label style="display:flex;gap:8px;align-items:center;margin-bottom:0.35rem;font-weight:400;">
+                <input type="checkbox" name="visible_{{ $cle }}" value="1" {{ old('visible_'.$cle, $visibilite[$cle] ? '1' : '0') === '1' ? 'checked' : '' }}/> {{ $label }}
+              </label>
+            @endforeach
+          </div>
+        </div>
+      </div>
+
       <div class="form-group">
         <label>Adresse</label>
         <input class="form-control" type="text" name="adresse" value="{{ old('adresse', $contact['adresse']) }}" placeholder="Ex : Village d'Andé, près de la mairie"/>

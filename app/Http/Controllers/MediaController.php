@@ -20,7 +20,7 @@ class MediaController extends Controller
 
     public function create(): View
     {
-        return view('medias.form', ['media' => new Media(['type' => 'photo', 'publie' => true]), 'activites' => $this->activites()]);
+        return view('medias.form', ['media' => new Media(['type' => 'photo', 'publie' => false]), 'activites' => $this->activites()]);
     }
 
     public function store(Request $request): RedirectResponse
@@ -54,7 +54,7 @@ class MediaController extends Controller
                 'type' => 'photo',
                 'legende' => $request->input('legende'),
                 'activite_id' => $request->input('activite_id') ?: null,
-                'publie' => $request->boolean('publie'),
+                'publie' => $this->peutPublier($request) && $request->boolean('publie'),
                 'fichier_path' => $fichier->store('medias', 'public'),
             ]);
             JournalActivite::log('Ajout média', $media, $media->titre);
@@ -86,6 +86,20 @@ class MediaController extends Controller
         JournalActivite::log('Suppression média', null, $titre);
 
         return redirect()->route('medias.index')->with('success', 'Média supprimé.');
+    }
+
+    /** Seul le Super Admin décide de ce qui devient public ; les ajouts des agents restent en brouillon. */
+    private function peutPublier(Request $request): bool
+    {
+        return (bool) $request->user()?->isSuperAdmin();
+    }
+
+    public function basculerPublication(Media $media): RedirectResponse
+    {
+        $media->update(['publie' => ! $media->publie]);
+        JournalActivite::log($media->publie ? 'Publication média' : 'Retrait média du site', $media, $media->titre);
+
+        return back()->with('success', $media->publie ? 'Média publié dans la galerie.' : 'Média retiré de la galerie (brouillon).');
     }
 
     private function activites()
@@ -122,7 +136,7 @@ class MediaController extends Controller
             'type' => $type,
             'legende' => $data['legende'] ?? null,
             'activite_id' => $data['activite_id'] ?? null,
-            'publie' => $request->boolean('publie'),
+            'publie' => $this->peutPublier($request) && $request->boolean('publie'),
             'video_url' => $type === 'video' ? ($data['video_url'] ?? null) : null,
         ];
 

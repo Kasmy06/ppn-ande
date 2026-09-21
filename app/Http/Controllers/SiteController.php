@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Activite;
 use App\Models\Media;
 use App\Models\MessageContact;
+use App\Support\SiteInfo;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -17,7 +18,7 @@ class SiteController extends Controller
         return view('site.accueil', [
             'prochaines' => Activite::publie()->aVenir()->orderBy('date_debut')->limit(3)->get(),
             'recentes' => Activite::publie()->orderByDesc('date_debut')->limit(3)->get(),
-            'medias' => Media::publie()->latest()->limit(6)->get(),
+            'medias' => SiteInfo::page('galerie') ? Media::publie()->latest()->limit(6)->get() : collect(),
         ]);
     }
 
@@ -58,6 +59,8 @@ class SiteController extends Controller
 
     public function agenda(Request $request): View
     {
+        abort_unless(SiteInfo::page('agenda'), 404);
+
         try {
             $mois = Carbon::createFromFormat('!Y-m', (string) $request->query('mois'))->startOfMonth();
         } catch (\Throwable) {
@@ -98,6 +101,8 @@ class SiteController extends Controller
 
     public function galerie(Request $request): View
     {
+        abort_unless(SiteInfo::page('galerie'), 404);
+
         $type = in_array($request->query('type'), ['photo', 'video'], true) ? $request->query('type') : null;
 
         $medias = Media::publie()
@@ -111,16 +116,22 @@ class SiteController extends Controller
 
     public function aPropos(): View
     {
+        abort_unless(SiteInfo::page('a_propos'), 404);
+
         return view('site.a-propos');
     }
 
     public function contact(): View
     {
+        abort_unless(SiteInfo::page('contact'), 404);
+
         return view('site.contact');
     }
 
     public function envoyerContact(Request $request): RedirectResponse
     {
+        abort_unless(SiteInfo::page('contact'), 404);
+
         $data = $request->validate([
             'nom' => ['required', 'string', 'max:120'],
             'email' => ['required', 'email', 'max:150'],

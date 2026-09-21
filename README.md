@@ -40,6 +40,13 @@ galerie photos/vidéos et formulaire de contact. Les coordonnées, horaires, tex
 **Paramètres > Application** ; les activités et médias se gèrent dans le menu de l'espace équipe, et les messages reçus
 dans **Messages**.
 
+### Contrôle de ce qui est public
+
+- Les **activités** et **médias** sont créés en **brouillon** : rien n'est visible du public tant que le Super Admin ne clique pas sur
+  « Publier » (liste des activités / des médias). Les médias ajoutés par un agent restent en brouillon jusqu'à validation.
+- Dans **Paramètres > Application > « Ce que le public peut voir »**, chaque page (À propos, Agenda, Galerie, Contact) et chaque
+  information de contact (adresse, téléphones, e-mail, horaires, carte) peut être masquée sans être effacée.
+
 ## Mise en production
 
 1. Partir de `.env.production.example` : `APP_ENV=production`, `APP_DEBUG=false`, `SESSION_SECURE_COOKIE=true` (HTTPS), compte MySQL dédié.

@@ -20,14 +20,21 @@ class ParametreController extends Controller
             'nomStructure' => ParametreApplication::get('nom_structure', "PPN d'Andé"),
             'capaciteJournaliere' => ParametreApplication::get('capacite_journaliere', 60),
             'logoUrl' => $logoPath ? Storage::disk('public')->url($logoPath) : null,
+            // Valeurs brutes (même si masquées au public) pour ne jamais les perdre à l'enregistrement.
             'contact' => [
-                'adresse' => SiteInfo::adresse(),
-                'telephones' => implode("\n", SiteInfo::telephones()),
-                'email' => SiteInfo::email(),
-                'horaires' => SiteInfo::horaires(),
-                'a_propos' => SiteInfo::aPropos(),
+                'adresse' => ParametreApplication::get('adresse'),
+                'telephones' => ParametreApplication::get('telephones'),
+                'email' => ParametreApplication::get('email'),
+                'horaires' => ParametreApplication::get('horaires'),
+                'a_propos' => ParametreApplication::get('a_propos'),
                 'carte_url' => ParametreApplication::get('carte_url'),
             ],
+            'visibilite' => collect(array_keys(SiteInfo::INFOS))
+                ->mapWithKeys(fn ($cle) => [$cle => SiteInfo::visible($cle)])
+                ->all(),
+            'pagesActives' => collect(array_keys(SiteInfo::PAGES))
+                ->mapWithKeys(fn ($cle) => [$cle => SiteInfo::page($cle)])
+                ->all(),
         ]);
     }
 
@@ -51,6 +58,18 @@ class ParametreController extends Controller
 
         foreach (['adresse', 'telephones', 'email', 'horaires', 'a_propos', 'carte_url'] as $cle) {
             ParametreApplication::set($cle, $data[$cle] ?? null);
+        }
+
+        // Interrupteurs de publication : envoyés par le formulaire (champ caché « 0 » + case « 1 »).
+        foreach (array_keys(SiteInfo::INFOS) as $cle) {
+            if ($request->has('visible_'.$cle)) {
+                ParametreApplication::set('visible_'.$cle, $request->boolean('visible_'.$cle) ? '1' : '0');
+            }
+        }
+        foreach (array_keys(SiteInfo::PAGES) as $cle) {
+            if ($request->has('visible_page_'.$cle)) {
+                ParametreApplication::set('visible_page_'.$cle, $request->boolean('visible_page_'.$cle) ? '1' : '0');
+            }
         }
 
         ParametreApplication::set('nom_structure', $data['nom_structure']);

@@ -69,9 +69,13 @@
         </select>
       </div>
       <div class="form-group">
-        <label style="display:flex;gap:8px;align-items:center;">
-          <input type="checkbox" name="publie" value="1" {{ old('publie', $media->publie) ? 'checked' : '' }}/> Publier sur le site
-        </label>
+        @if (auth()->user()->isSuperAdmin())
+          <label style="display:flex;gap:8px;align-items:center;">
+            <input type="checkbox" name="publie" value="1" {{ old('publie', $media->publie) ? 'checked' : '' }}/> Publier dans la galerie publique <span style="color:var(--muted);font-weight:400;font-size:.8rem;">(décoché = brouillon)</span>
+          </label>
+        @else
+          <p style="font-size:.85rem;color:var(--muted);"><i class="fas fa-circle-info"></i> Ce média sera enregistré en brouillon : le Super Admin décidera de le publier sur le site public.</p>
+        @endif
       </div>
 
       <div style="display:flex;gap:10px;justify-content:flex-end;">
