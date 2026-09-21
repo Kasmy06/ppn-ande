@@ -105,4 +105,29 @@ class PublicationTest extends TestCase
         auth()->logout();
         $this->get('/login')->assertSee('rel="icon"', false)->assertSee('logos/mon-logo.png', false);
     }
+
+    public function test_agent_can_add_activity_but_only_as_draft_and_cannot_edit_or_delete(): void
+    {
+        Storage::fake('public');
+        $this->actingAs(User::factory()->agent()->create());
+
+        $this->get('/gestion-activites')->assertOk();
+        $this->get('/gestion-activites/create')->assertOk()->assertSee('enregistrée en brouillon');
+        $this->post('/gestion-activites', $this->base + ['publie' => 1, 'image' => UploadedFile::fake()->image('a.jpg')])
+            ->assertRedirect('/gestion-activites');
+
+        $activite = Activite::firstOrFail();
+        $this->assertFalse($activite->publie, 'un agent ne peut pas publier');
+        $this->get('/activites')->assertDontSee('Atelier secret');
+        $this->assertFalse(Media::first()->publie);
+
+        $this->get('/gestion-activites')->assertSee('Atelier secret')->assertSee('En attente de validation');
+        $this->get("/gestion-activites/{$activite->id}/edit")->assertForbidden();
+        $this->put("/gestion-activites/{$activite->id}", $this->base + ['titre' => 'Piraté'])->assertForbidden();
+        $this->delete("/gestion-activites/{$activite->id}")->assertForbidden();
+        $this->assertSame('Atelier secret', $activite->fresh()->titre);
+
+        $this->actingAs(User::factory()->superAdmin()->create())->patch("/gestion-activites/{$activite->id}/publication");
+        $this->get('/activites')->assertSee('Atelier secret');
+    }
 }

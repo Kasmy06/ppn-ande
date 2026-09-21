@@ -69,6 +69,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/gestion-medias/create', [MediaController::class, 'create'])->name('medias.create');
     Route::post('/gestion-medias', [MediaController::class, 'store'])->name('medias.store');
 
+    // Activités : consultation et ajout ouverts à l'équipe (l'ajout d'un agent reste en brouillon ; le reste : Super Admin).
+    Route::get('/gestion-activites', [ActiviteController::class, 'index'])->name('activites.index');
+    Route::get('/gestion-activites/create', [ActiviteController::class, 'create'])->name('activites.create');
+    Route::post('/gestion-activites', [ActiviteController::class, 'store'])->name('activites.store');
+
     // Messages du formulaire de contact : consultation par toute l'équipe, suppression réservée au Super Admin.
     Route::get('/messages', [MessageController::class, 'index'])->name('messages.index');
     Route::patch('/messages/{message}/lu', [MessageController::class, 'basculerLu'])->name('messages.lu');
@@ -81,7 +86,7 @@ Route::middleware('auth')->group(function () {
         Route::patch('/gestion-medias/{media}/publication', [MediaController::class, 'basculerPublication'])->name('medias.publication');
 
         Route::resource('gestion-activites', ActiviteController::class)
-            ->except('show')->parameters(['gestion-activites' => 'activite'])->names('activites');
+            ->only(['edit', 'update', 'destroy'])->parameters(['gestion-activites' => 'activite'])->names('activites');
         Route::resource('gestion-medias', MediaController::class)
             ->only(['edit', 'update', 'destroy'])->parameters(['gestion-medias' => 'media'])->names('medias');
 

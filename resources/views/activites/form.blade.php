@@ -81,9 +81,13 @@
       </div>
       <p style="color:var(--muted);font-size:.82rem;margin:-6px 0 14px;">L'image et la vidéo ajoutées ici apparaissent aussi dans la galerie du site, une fois l'activité publiée.</p>
       <div class="form-group">
-        <label style="display:flex;gap:8px;align-items:center;">
-          <input type="checkbox" name="publie" value="1" {{ old('publie', $activite->publie) ? 'checked' : '' }}/> Publier sur le site public <span style="color:var(--muted);font-weight:400;font-size:.8rem;">(décoché = brouillon, visible seulement par l'équipe)</span>
-        </label>
+        @if (auth()->user()->isSuperAdmin())
+          <label style="display:flex;gap:8px;align-items:center;">
+            <input type="checkbox" name="publie" value="1" {{ old('publie', $activite->publie) ? 'checked' : '' }}/> Publier sur le site public <span style="color:var(--muted);font-weight:400;font-size:.8rem;">(décoché = brouillon, visible seulement par l'équipe)</span>
+          </label>
+        @else
+          <p style="font-size:.85rem;color:var(--muted);"><i class="fas fa-circle-info"></i> Cette activité sera enregistrée en brouillon : le Super Admin décidera de la publier sur le site public.</p>
+        @endif
       </div>
 
       <div style="display:flex;gap:10px;justify-content:flex-end;">

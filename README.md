@@ -43,7 +43,8 @@ dans **Messages**.
 ### Contrôle de ce qui est public
 
 - Les **activités** et **médias** sont créés en **brouillon** : rien n'est visible du public tant que le Super Admin ne clique pas sur
-  « Publier » (liste des activités / des médias). Les médias ajoutés par un agent restent en brouillon jusqu'à validation.
+  « Publier » (liste des activités / des médias). Les activités et médias ajoutés par un agent restent en brouillon jusqu'à validation ; l'agent peut consulter et ajouter, mais
+  seul le Super Admin peut modifier, supprimer et publier.
 - Dans **Paramètres > Application > « Ce que le public peut voir »**, chaque page (À propos, Agenda, Galerie, Contact) et chaque
   information de contact (adresse, téléphones, e-mail, horaires, carte) peut être masquée sans être effacée.
 
@@ -69,6 +70,10 @@ dans **Messages**.
 | Calendrier (consulter) | ✓ | ✓ |
 | Calendrier (créer/modifier) | ✓ | ✓ |
 | Calendrier (supprimer) | ✓ | — |
+| Activités et médias du site (consulter, ajouter en brouillon) | ✓ | ✓ |
+| Activités et médias du site (modifier, supprimer, publier) | ✓ | — |
+| Messages du formulaire de contact (lire) | ✓ | ✓ |
+| Messages du formulaire de contact (supprimer) | ✓ | — |
 | Exports | ✓ | ✓ |
 | Paramètres (utilisateurs, config, journal) | ✓ | — |
 

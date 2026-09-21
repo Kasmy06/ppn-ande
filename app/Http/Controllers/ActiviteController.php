@@ -89,7 +89,8 @@ class ActiviteController extends Controller
             'video_url' => ['nullable', 'url', 'max:255'],
         ]);
 
-        $data['publie'] = $request->boolean('publie');
+        // Seul le Super Admin décide de ce qui devient public ; les ajouts des agents restent en brouillon.
+        $data['publie'] = (bool) $request->user()?->isSuperAdmin() && $request->boolean('publie');
         unset($data['image'], $data['photos'], $data['video'], $data['video_url']);
 
         if ($request->hasFile('image')) {

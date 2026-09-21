@@ -22,14 +22,19 @@
               <td>{{ $a->date_debut->format('d/m/Y') }}{{ $a->date_fin ? ' → '.$a->date_fin->format('d/m/Y') : '' }}</td>
               <td>{{ $a->lieu ?? '—' }}</td>
               <td>
-                <form method="POST" action="{{ route('activites.publication', $a) }}" style="display:inline">
-                  @csrf @method('PATCH')
-                  <button class="btn btn-sm {{ $a->publie ? 'btn-outline' : 'btn-primary' }}" title="{{ $a->publie ? 'Retirer du site public' : 'Rendre visible sur le site public' }}">
-                    <i class="fas {{ $a->publie ? 'fa-eye' : 'fa-eye-slash' }}"></i> {{ $a->publie ? 'Publiée · Retirer' : 'Brouillon · Publier' }}
-                  </button>
-                </form>
+                @if (auth()->user()->isSuperAdmin())
+                  <form method="POST" action="{{ route('activites.publication', $a) }}" style="display:inline">
+                    @csrf @method('PATCH')
+                    <button class="btn btn-sm {{ $a->publie ? 'btn-outline' : 'btn-primary' }}" title="{{ $a->publie ? 'Retirer du site public' : 'Rendre visible sur le site public' }}">
+                      <i class="fas {{ $a->publie ? 'fa-eye' : 'fa-eye-slash' }}"></i> {{ $a->publie ? 'Publiée · Retirer' : 'Brouillon · Publier' }}
+                    </button>
+                  </form>
+                @else
+                  <span class="badge badge-{{ $a->publie ? 'green' : 'orange' }}">{{ $a->publie ? 'Publiée' : 'En attente de validation' }}</span>
+                @endif
               </td>
               <td>
+                @if (auth()->user()->isSuperAdmin())
                 <div class="action-btns">
                   <a class="btn btn-sm btn-outline" title="Modifier" href="{{ route('activites.edit', $a) }}"><i class="fas fa-pen"></i></a>
                   <form method="POST" action="{{ route('activites.destroy', $a) }}" onsubmit="return confirm('Supprimer cette activité ?')" style="display:inline">
@@ -37,6 +42,9 @@
                     <button class="btn btn-sm btn-danger" title="Supprimer"><i class="fas fa-trash"></i></button>
                   </form>
                 </div>
+                @else
+                  <span style="color:var(--muted);font-size:0.78rem;">—</span>
+                @endif
               </td>
             </tr>
           @empty
