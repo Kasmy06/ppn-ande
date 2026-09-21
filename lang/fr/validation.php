@@ -1,0 +1,52 @@
+<?php
+
+return [
+    'array' => 'Le champ :attribute doit être une liste.',
+    'after_or_equal' => 'Le champ :attribute doit être une date postérieure ou égale au :date.',
+    'boolean' => 'Le champ :attribute doit être vrai ou faux.',
+    'confirmed' => 'La confirmation du champ :attribute ne correspond pas.',
+    'date' => 'Le champ :attribute n\'est pas une date valide.',
+    'email' => 'Le champ :attribute doit être une adresse e-mail valide.',
+    'exists' => 'La valeur choisie pour :attribute est invalide.',
+    'file' => 'Le champ :attribute doit être un fichier.',
+    'image' => 'Le fichier :attribute doit être une image (JPG, PNG, WebP…).',
+    'in' => 'La valeur choisie pour :attribute est invalide.',
+    'integer' => 'Le champ :attribute doit être un entier.',
+    'mimes' => 'Le fichier :attribute doit être de type : :values.',
+    'mimetypes' => 'Le fichier :attribute doit être de type : :values (MP4, WebM ou MOV).',
+    'required' => 'Le champ :attribute est obligatoire.',
+    'string' => 'Le champ :attribute doit être un texte.',
+    'unique' => 'La valeur de :attribute est déjà utilisée.',
+    'uploaded' => 'Le fichier :attribute n\'a pas pu être envoyé : il dépasse la taille maximale autorisée par le serveur.',
+    'url' => 'Le champ :attribute doit être une adresse web valide.',
+
+    'max' => [
+        'array' => 'Le champ :attribute ne doit pas contenir plus de :max éléments.',
+        'file' => 'Le fichier :attribute est trop lourd : maximum :max Ko.',
+        'numeric' => 'Le champ :attribute ne doit pas dépasser :max.',
+        'string' => 'Le champ :attribute ne doit pas dépasser :max caractères.',
+    ],
+    'min' => [
+        'array' => 'Le champ :attribute doit contenir au moins :min éléments.',
+        'file' => 'Le fichier :attribute doit faire au moins :min Ko.',
+        'numeric' => 'Le champ :attribute doit être au moins :min.',
+        'string' => 'Le champ :attribute doit contenir au moins :min caractères.',
+    ],
+
+    'attributes' => [
+        'titre' => 'titre',
+        'description' => 'description',
+        'image' => 'image',
+        'photos' => 'photos',
+        'photos.*' => 'photo',
+        'video' => 'vidéo',
+        'video_url' => 'lien vidéo',
+        'date_debut' => 'date de début',
+        'date_fin' => 'date de fin',
+        'categorie' => 'catégorie',
+        'activite_id' => 'activité',
+        'name' => 'nom',
+        'email' => 'e-mail',
+        'password' => 'mot de passe',
+    ],
+];

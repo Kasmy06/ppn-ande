@@ -32,7 +32,7 @@
       </div>
 
       <div class="form-group" id="blocPhoto">
-        <label>{{ $edition ? 'Photo (JPG/PNG, 5 Mo max)' : 'Photos (JPG/PNG, 5 Mo max chacune, 20 maximum)' }} {{ $edition && $media->type === 'photo' ? '— laisser vide pour conserver' : '*' }}</label>
+        <label>{{ $edition ? 'Photo (JPG/PNG, 10 Mo max)' : 'Photos (JPG/PNG, 10 Mo max chacune, 20 maximum)' }} {{ $edition && $media->type === 'photo' ? '— laisser vide pour conserver' : '*' }}</label>
         @if ($media->type === 'photo' && $media->fichier_url)
           <img src="{{ $media->fichier_url }}" alt="" style="height:80px;border-radius:8px;margin-bottom:8px;display:block"/>
         @endif

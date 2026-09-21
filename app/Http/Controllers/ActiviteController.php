@@ -66,7 +66,7 @@ class ActiviteController extends Controller
             'date_fin' => ['nullable', 'date', 'after_or_equal:date_debut'],
             'horaires' => ['nullable', 'string', 'max:60'],
             'lieu' => ['nullable', 'string', 'max:150'],
-            'image' => ['nullable', 'image', 'max:3072'],
+            'image' => ['nullable', 'image', 'max:10240'],
         ]);
 
         $data['publie'] = $request->boolean('publie');

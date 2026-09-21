@@ -19,6 +19,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Les liens vers les fichiers téléversés suivent l'adresse réellement utilisée
+        // (artisan serve, XAMPP en sous-dossier…) au lieu de dépendre de APP_URL.
+        config(['filesystems.disks.public.url' => asset('storage')]);
     }
 }

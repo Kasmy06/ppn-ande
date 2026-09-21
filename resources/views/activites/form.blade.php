@@ -54,7 +54,7 @@
         </div>
       </div>
       <div class="form-group">
-        <label>Image (JPG/PNG, 3 Mo max)</label>
+        <label>Image (JPG/PNG, 10 Mo max)</label>
         @if ($activite->image_path)
           <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($activite->image_path) }}" alt="" style="height:80px;border-radius:8px;margin-bottom:8px;"/>
         @endif

@@ -45,7 +45,7 @@ class MediaController extends Controller
             'legende' => ['nullable', 'string', 'max:1000'],
             'activite_id' => ['nullable', 'exists:activites,id'],
             'photos' => ['array', 'max:20'],
-            'photos.*' => ['image', 'max:5120'],
+            'photos.*' => ['image', 'max:10240'],
         ]);
 
         foreach (array_values($photos) as $i => $fichier) {
@@ -101,7 +101,7 @@ class MediaController extends Controller
             'legende' => ['nullable', 'string', 'max:1000'],
             'activite_id' => ['nullable', 'exists:activites,id'],
             'photos' => ['nullable', 'array', 'max:20'],
-            'photos.*' => ['image', 'max:5120'],
+            'photos.*' => ['image', 'max:10240'],
             'video' => ['nullable', 'file', 'mimetypes:video/mp4,video/webm,video/quicktime', 'max:51200'],
             'video_url' => ['nullable', 'url', 'max:255'],
         ]);
