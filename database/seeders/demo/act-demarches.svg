@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500">
-<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5b1470"/><stop offset="1" stop-color="#8E2E8E"/></linearGradient></defs>
-<rect width="800" height="500" fill="url(#g)"/>
-<circle cx="700" cy="70" r="150" fill="#fff" opacity=".07"/><circle cx="90" cy="450" r="130" fill="#fff" opacity=".07"/><circle cx="650" cy="430" r="60" fill="#1FA24B" opacity=".35"/>
-<rect x="260" y="160" width="280" height="190" rx="16" fill="#fff"/><rect x="284" y="184" width="110" height="14" rx="7" fill="#8E2E8E"/><rect x="284" y="212" width="232" height="10" rx="5" fill="#d9c3e0"/><rect x="284" y="234" width="200" height="10" rx="5" fill="#d9c3e0"/><rect x="284" y="256" width="216" height="10" rx="5" fill="#d9c3e0"/><rect x="284" y="292" width="90" height="34" rx="17" fill="#1FA24B"/>
-<text x="400" y="432" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700" fill="#fff">Démarches en ligne</text>
-</svg>
