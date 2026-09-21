@@ -61,6 +61,12 @@
         <input class="form-control" type="file" name="image" accept="image/*"/>
         @error('image') <div class="field-error">{{ $message }}</div> @enderror
       </div>
+      <div class="form-group">
+        <label>Photos supplémentaires pour la galerie (optionnel, 20 max, 10 Mo chacune)</label>
+        <input class="form-control" type="file" name="photos[]" accept="image/*" multiple/>
+        @error('photos') <div class="field-error">{{ $message }}</div> @enderror
+        @error('photos.*') <div class="field-error">{{ $message }}</div> @enderror
+      </div>
       <div class="form-row">
         <div class="form-group">
           <label>Vidéo : lien YouTube ou Vimeo (optionnel)</label>

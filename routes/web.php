@@ -3,6 +3,7 @@
 use App\Http\Controllers\ActiviteController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MediaController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\SiteController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EtablissementController;
@@ -20,11 +21,15 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [SiteController::class, 'accueil'])->name('site.accueil');
 Route::get('/activites', [SiteController::class, 'activites'])->name('site.activites');
 Route::get('/galerie', [SiteController::class, 'galerie'])->name('site.galerie');
+Route::get('/agenda', [SiteController::class, 'agenda'])->name('site.agenda');
+Route::get('/a-propos', [SiteController::class, 'aPropos'])->name('site.a-propos');
+Route::get('/contact', [SiteController::class, 'contact'])->name('site.contact');
+Route::post('/contact', [SiteController::class, 'envoyerContact'])->middleware('throttle:5,10')->name('site.contact.envoyer');
 Route::get('/activites/{activite}', [SiteController::class, 'activite'])->whereNumber('activite')->name('site.activite');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-    Route::post('/login', [AuthController::class, 'login'])->name('login.attempt');
+    Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:10,1')->name('login.attempt');
 
     Route::get('/mot-de-passe/oublie', [PasswordResetController::class, 'showLinkRequestForm'])->name('password.request');
     Route::post('/mot-de-passe/oublie', [PasswordResetController::class, 'sendResetLinkEmail'])->name('password.email');
@@ -64,8 +69,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/gestion-medias/create', [MediaController::class, 'create'])->name('medias.create');
     Route::post('/gestion-medias', [MediaController::class, 'store'])->name('medias.store');
 
+    // Messages du formulaire de contact : consultation par toute l'équipe, suppression réservée au Super Admin.
+    Route::get('/messages', [MessageController::class, 'index'])->name('messages.index');
+    Route::patch('/messages/{message}/lu', [MessageController::class, 'basculerLu'])->name('messages.lu');
+
     // Actions réservées au Super Admin.
     Route::middleware('role:super_admin')->group(function () {
+        Route::delete('/messages/{message}', [MessageController::class, 'destroy'])->name('messages.destroy');
+
         Route::resource('gestion-activites', ActiviteController::class)
             ->except('show')->parameters(['gestion-activites' => 'activite'])->names('activites');
         Route::resource('gestion-medias', MediaController::class)

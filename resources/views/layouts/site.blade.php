@@ -1,27 +1,40 @@
 <!DOCTYPE html>
 <html lang="fr">
+@php
+  use App\Support\SiteInfo;
+  $logoPath = \App\Models\ParametreApplication::get('logo_path');
+  $nomStructure = \App\Models\ParametreApplication::get('nom_structure', "PPN d'Andé");
+  $logoUrl = $logoPath ? \Illuminate\Support\Facades\Storage::disk('public')->url($logoPath) : null;
+  $titrePage = trim($__env->yieldContent('title', "Accueil")).' – '.$nomStructure;
+  $descriptionPage = trim($__env->yieldContent('description')) ?: "Découvrez les formations, ateliers et événements du Point de Présence Numérique d'Andé.";
+  $imagePartage = trim($__env->yieldContent('og_image')) ?: $logoUrl;
+@endphp
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>@yield('title', "PPN d'Andé") – Point de Présence Numérique</title>
-  <meta name="description" content="@yield('description', "Découvrez les formations, ateliers et événements du Point de Présence Numérique d'Andé.")"/>
+  <title>{{ $titrePage }}</title>
+  <meta name="description" content="{{ $descriptionPage }}"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:site_name" content="{{ $nomStructure }}"/>
+  <meta property="og:title" content="{{ $titrePage }}"/>
+  <meta property="og:description" content="{{ $descriptionPage }}"/>
+  <meta property="og:url" content="{{ url()->current() }}"/>
+  @if ($imagePartage)<meta property="og:image" content="{{ $imagePartage }}"/>@endif
+  <meta name="twitter:card" content="summary_large_image"/>
+  <link rel="icon" href="{{ $logoUrl ?? asset('favicon.ico') }}"/>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <link rel="stylesheet" href="{{ asset('css/site.css') }}"/>
 </head>
 <body>
-@php
-  $logoPath = \App\Models\ParametreApplication::get('logo_path');
-  $nomStructure = \App\Models\ParametreApplication::get('nom_structure', "PPN d'Andé");
-@endphp
 
 <header class="site-header">
   <div class="wrap header-in">
     <a href="{{ route('site.accueil') }}" class="brand">
       <span class="brand-logo">
-        @if ($logoPath)
-          <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($logoPath) }}" alt="Logo {{ $nomStructure }}"/>
+        @if ($logoUrl)
+          <img src="{{ $logoUrl }}" alt="Logo {{ $nomStructure }}"/>
         @else
           <i class="fas fa-network-wired"></i>
         @endif
@@ -31,9 +44,11 @@
     <button class="menu-toggle" type="button" aria-label="Menu" onclick="document.querySelector('.site-nav').classList.toggle('open')"><i class="fas fa-bars"></i></button>
     <nav class="site-nav">
       <a href="{{ route('site.accueil') }}" class="{{ request()->routeIs('site.accueil') ? 'active' : '' }}">Accueil</a>
+      <a href="{{ route('site.a-propos') }}" class="{{ request()->routeIs('site.a-propos') ? 'active' : '' }}">À propos</a>
       <a href="{{ route('site.activites') }}" class="{{ request()->routeIs('site.activite*') ? 'active' : '' }}">Activités</a>
+      <a href="{{ route('site.agenda') }}" class="{{ request()->routeIs('site.agenda') ? 'active' : '' }}">Agenda</a>
       <a href="{{ route('site.galerie') }}" class="{{ request()->routeIs('site.galerie') ? 'active' : '' }}">Galerie</a>
-      <a href="{{ route('site.accueil') }}#contact">Contact</a>
+      <a href="{{ route('site.contact') }}" class="{{ request()->routeIs('site.contact') ? 'active' : '' }}">Contact</a>
       <a href="{{ auth()->check() ? route('dashboard') : route('login') }}" class="nav-cta"><i class="fas fa-lock"></i> Espace équipe</a>
     </nav>
   </div>
@@ -50,14 +65,15 @@
     <div>
       <div class="footer-title">Contact</div>
       <p>
-        @if ($adresse = \App\Models\ParametreApplication::get('adresse'))<i class="fas fa-location-dot"></i> {{ $adresse }}<br>@endif
-        @foreach (config('site.telephones') as $tel)<i class="fas fa-phone"></i> <a href="tel:{{ preg_replace('/\s+/', '', $tel) }}">{{ $tel }}</a><br>@endforeach
-        @if ($mail = \App\Models\ParametreApplication::get('email'))<i class="fas fa-envelope"></i> <a href="mailto:{{ $mail }}">{{ $mail }}</a>@endif
+        @if ($adresse = SiteInfo::adresse())<i class="fas fa-location-dot"></i> {{ $adresse }}<br>@endif
+        @foreach (SiteInfo::telephones() as $tel)<i class="fas fa-phone"></i> <a href="{{ SiteInfo::lienTel($tel) }}">{{ $tel }}</a><br>@endforeach
+        @if ($mail = SiteInfo::email())<i class="fas fa-envelope"></i> <a href="mailto:{{ $mail }}">{{ $mail }}</a><br>@endif
+        <a href="{{ route('site.contact') }}">Nous écrire <i class="fas fa-arrow-right"></i></a>
       </p>
     </div>
     <div>
       <div class="footer-title">Navigation</div>
-      <p><a href="{{ route('site.activites') }}">Toutes les activités</a><br><a href="{{ route('login') }}">Espace équipe</a></p>
+      <p><a href="{{ route('site.activites') }}">Activités</a> · <a href="{{ route('site.agenda') }}">Agenda</a><br><a href="{{ route('site.galerie') }}">Galerie</a> · <a href="{{ route('site.a-propos') }}">À propos</a><br><a href="{{ route('login') }}">Espace équipe</a></p>
     </div>
   </div>
   <div class="copy">© {{ date('Y') }} {{ $nomStructure }}</div>

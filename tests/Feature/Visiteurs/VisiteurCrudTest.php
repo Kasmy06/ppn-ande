@@ -39,6 +39,7 @@ class VisiteurCrudTest extends TestCase
             'etablissement_id' => $etablissement->id,
             'classe_ou_poste' => 'CM2',
             'date_visite' => '2026-05-10',
+            'heure_arrivee' => '09:30',
         ]);
 
         $response->assertRedirect('/visiteurs');
@@ -60,6 +61,7 @@ class VisiteurCrudTest extends TestCase
             'sexe' => $visiteur->sexe,
             'type' => $visiteur->type,
             'date_visite' => $visiteur->date_visite->format('Y-m-d'),
+            'heure_arrivee' => '09:30',
         ]);
 
         $response->assertRedirect('/visiteurs');

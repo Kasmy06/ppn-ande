@@ -3,6 +3,8 @@
 @section('title', $activite->titre)
 @section('description', \Illuminate\Support\Str::limit($activite->description, 150))
 
+@section('og_image', $activite->image_path ? \Illuminate\Support\Facades\Storage::disk('public')->url($activite->image_path) : '')
+
 @section('content')
 <div class="wrap detail">
   <article>
@@ -37,7 +39,7 @@
       @if ($activite->horaires)<li><i class="fas fa-clock"></i><div><span>Horaires</span>{{ $activite->horaires }}</div></li>@endif
       @if ($activite->lieu)<li><i class="fas fa-location-dot"></i><div><span>Lieu</span>{{ $activite->lieu }}</div></li>@endif
     </ul>
-    <a class="btn btn-green" href="#contact" style="width:100%;justify-content:center"><i class="fas fa-envelope"></i> Nous contacter</a>
+    <a class="btn btn-green" href="{{ route('site.contact') }}" style="width:100%;justify-content:center"><i class="fas fa-envelope"></i> Nous contacter</a>
   </aside>
 </div>
 

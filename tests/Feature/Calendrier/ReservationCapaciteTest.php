@@ -87,7 +87,7 @@ class ReservationCapaciteTest extends TestCase
         $this->assertDatabaseHas('reservations', ['date' => '2026-09-12 00:00:00', 'nb_participants_prevu' => 40]);
     }
 
-    public function test_agent_cannot_create_reservation(): void
+    public function test_agent_can_create_reservation(): void
     {
         $agent = User::factory()->agent()->create();
         $etablissement = Etablissement::factory()->create();
@@ -101,6 +101,16 @@ class ReservationCapaciteTest extends TestCase
             'statut' => 'confirmee',
         ]);
 
-        $response->assertForbidden();
+        $response->assertSessionHasNoErrors();
+        $this->assertDatabaseHas('reservations', ['nb_participants_prevu' => 10]);
+    }
+
+    public function test_agent_cannot_delete_reservation(): void
+    {
+        $agent = User::factory()->agent()->create();
+        $reservation = \App\Models\Reservation::factory()->create();
+
+        $this->actingAs($agent)->delete("/calendrier/{$reservation->id}")->assertForbidden();
+        $this->assertDatabaseHas('reservations', ['id' => $reservation->id]);
     }
 }

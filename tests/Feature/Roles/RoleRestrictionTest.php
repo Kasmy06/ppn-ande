@@ -44,6 +44,7 @@ class RoleRestrictionTest extends TestCase
             'sexe' => 'M',
             'type' => 'Externe',
             'date_visite' => now()->format('Y-m-d'),
+            'heure_arrivee' => '09:30',
         ]);
 
         $response->assertRedirect('/visiteurs');

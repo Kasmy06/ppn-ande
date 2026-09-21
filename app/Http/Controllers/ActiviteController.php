@@ -53,6 +53,8 @@ class ActiviteController extends Controller
         if ($activite->image_path) {
             Storage::disk('public')->delete($activite->image_path);
         }
+        // La copie de la couverture dans la galerie disparaît avec l'activité ; les autres médias restent.
+        $this->supprimerCopiesAuto($activite);
         $activite->delete();
         JournalActivite::log('Suppression activité', null, $titre);
 
@@ -70,12 +72,14 @@ class ActiviteController extends Controller
             'horaires' => ['nullable', 'string', 'max:60'],
             'lieu' => ['nullable', 'string', 'max:150'],
             'image' => ['nullable', 'image', 'max:10240'],
+            'photos' => ['nullable', 'array', 'max:20'],
+            'photos.*' => ['image', 'max:10240'],
             'video' => ['nullable', 'file', 'mimetypes:video/mp4,video/webm,video/quicktime', 'max:51200'],
             'video_url' => ['nullable', 'url', 'max:255'],
         ]);
 
         $data['publie'] = $request->boolean('publie');
-        unset($data['image'], $data['video'], $data['video_url']);
+        unset($data['image'], $data['photos'], $data['video'], $data['video_url']);
 
         if ($request->hasFile('image')) {
             if ($existante?->image_path) {
@@ -91,12 +95,25 @@ class ActiviteController extends Controller
     private function alimenterGalerie(Request $request, Activite $activite): void
     {
         if ($request->hasFile('image') && $activite->image_path) {
+            // Nouvelle couverture : elle remplace l'ancienne copie au lieu de s'ajouter à la galerie.
+            $this->supprimerCopiesAuto($activite);
             $copie = 'medias/'.basename($activite->image_path);
             Storage::disk('public')->copy($activite->image_path, $copie);
             Media::create([
                 'titre' => $activite->titre,
                 'type' => 'photo',
                 'fichier_path' => $copie,
+                'activite_id' => $activite->id,
+                'publie' => $activite->publie,
+                'auto' => true,
+            ]);
+        }
+
+        foreach ($request->file('photos', []) as $i => $photo) {
+            Media::create([
+                'titre' => $activite->titre.' – photo '.($i + 1),
+                'type' => 'photo',
+                'fichier_path' => $photo->store('medias', 'public'),
                 'activite_id' => $activite->id,
                 'publie' => $activite->publie,
             ]);
@@ -111,6 +128,16 @@ class ActiviteController extends Controller
                 'activite_id' => $activite->id,
                 'publie' => $activite->publie,
             ]);
+        }
+    }
+
+    private function supprimerCopiesAuto(Activite $activite): void
+    {
+        foreach ($activite->medias()->where('auto', true)->get() as $copie) {
+            if ($copie->fichier_path) {
+                Storage::disk('public')->delete($copie->fichier_path);
+            }
+            $copie->delete();
         }
     }
 }

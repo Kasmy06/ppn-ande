@@ -8,7 +8,7 @@
 
   @include('parametres._tabs', ['active' => 'application'])
 
-  <div class="table-card" style="max-width: 560px; padding: 2rem;">
+  <div class="table-card" style="max-width: 720px; padding: 2rem;">
     <form method="POST" action="{{ route('parametres.application.update') }}" enctype="multipart/form-data">
       @csrf
       @method('PUT')
@@ -45,6 +45,42 @@
         <input class="form-control" type="number" name="capacite_journaliere" min="1" max="1000" value="{{ old('capacite_journaliere', $capaciteJournaliere) }}" required/>
         <p style="font-size:0.78rem;color:var(--muted);margin-top:0.4rem;">Nombre maximum de participants pouvant être reçus le même jour. Utilisée par le module Calendrier pour détecter les conflits de réservation.</p>
         @error('capacite_journaliere') <div class="field-error">{{ $message }}</div> @enderror
+      </div>
+
+      <hr style="border:0;border-top:1px solid var(--border);margin:1.5rem 0;">
+      <div style="font-weight:700;margin-bottom:0.25rem;">Site public : contact et présentation</div>
+      <p style="font-size:0.78rem;color:var(--muted);margin-bottom:1rem;">Ces informations s'affichent sur le site public (pages Contact, À propos et pied de page). Un champ vide n'est pas affiché.</p>
+
+      <div class="form-group">
+        <label>Adresse</label>
+        <input class="form-control" type="text" name="adresse" value="{{ old('adresse', $contact['adresse']) }}" placeholder="Ex : Village d'Andé, près de la mairie"/>
+        @error('adresse') <div class="field-error">{{ $message }}</div> @enderror
+      </div>
+      <div class="form-group">
+        <label>Téléphones (un numéro par ligne)</label>
+        <textarea class="form-control" name="telephones" rows="3">{{ old('telephones', $contact['telephones']) }}</textarea>
+        @error('telephones') <div class="field-error">{{ $message }}</div> @enderror
+      </div>
+      <div class="form-group">
+        <label>E-mail de contact</label>
+        <input class="form-control" type="email" name="email" value="{{ old('email', $contact['email']) }}" placeholder="contact@exemple.ci"/>
+        @error('email') <div class="field-error">{{ $message }}</div> @enderror
+      </div>
+      <div class="form-group">
+        <label>Horaires d'ouverture</label>
+        <textarea class="form-control" name="horaires" rows="3" placeholder="Lundi – vendredi : 8h – 17h&#10;Samedi : 9h – 12h">{{ old('horaires', $contact['horaires']) }}</textarea>
+        @error('horaires') <div class="field-error">{{ $message }}</div> @enderror
+      </div>
+      <div class="form-group">
+        <label>Présentation du PPN (page « À propos »)</label>
+        <textarea class="form-control" name="a_propos" rows="6">{{ old('a_propos', $contact['a_propos']) }}</textarea>
+        @error('a_propos') <div class="field-error">{{ $message }}</div> @enderror
+      </div>
+      <div class="form-group">
+        <label>Carte (adresse d'intégration)</label>
+        <input class="form-control" type="url" name="carte_url" value="{{ old('carte_url', $contact['carte_url']) }}" placeholder="https://www.google.com/maps/embed?pb=..."/>
+        <p style="font-size:0.75rem;color:var(--muted);margin-top:0.4rem;">Google Maps → Partager → Intégrer une carte → copiez uniquement l'adresse qui suit <code>src="</code>.</p>
+        @error('carte_url') <div class="field-error">{{ $message }}</div> @enderror
       </div>
 
       <button type="submit" class="btn btn-primary" style="margin-top:0.5rem;"><i class="fas fa-save"></i> Enregistrer</button>

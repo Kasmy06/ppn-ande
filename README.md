@@ -26,14 +26,29 @@ php artisan serve
 
 Ouvrir `http://127.0.0.1:8000`.
 
-### Comptes de démonstration (seeder)
+### Comptes initiaux
 
-| Rôle | Email | Mot de passe |
-|---|---|---|
-| Super Admin | `admin@ppn-ande.fr` | `password` |
-| Agent d'accueil | `agent@ppn-ande.fr` | `password` |
+`php artisan db:seed` crée `admin@ppn-ande.fr` (Super Admin) et `agent@ppn-ande.fr` (Agent d'accueil).
+**Il n'y a pas de mot de passe par défaut** : définissez `SEED_ADMIN_PASSWORD` et `SEED_AGENT_PASSWORD` dans le `.env`
+avant le seed, sinon un mot de passe aléatoire est généré et affiché une seule fois dans la console.
+La connexion est limitée à 10 tentatives par minute.
 
-**Ces identifiants sont à usage de développement uniquement — à changer avant toute mise en production.**
+## Site public
+
+Le site vitrine est servi à la racine (`/`) : accueil, à propos, activités (recherche, filtres), agenda mensuel,
+galerie photos/vidéos et formulaire de contact. Les coordonnées, horaires, texte de présentation et carte se règlent dans
+**Paramètres > Application** ; les activités et médias se gèrent dans le menu de l'espace équipe, et les messages reçus
+dans **Messages**.
+
+## Mise en production
+
+1. Partir de `.env.production.example` : `APP_ENV=production`, `APP_DEBUG=false`, `SESSION_SECURE_COOKIE=true` (HTTPS), compte MySQL dédié.
+2. `composer install --no-dev --optimize-autoloader`, `php artisan key:generate`, `php artisan migrate --force`.
+3. `php artisan storage:link` (nécessaire pour afficher les images et vidéos téléversées).
+4. `php artisan config:cache && php artisan route:cache && php artisan view:cache`.
+5. Définir des mots de passe forts (voir ci-dessus) et ne jamais laisser `APP_DEBUG=true`.
+6. Les vidéos téléversées sont limitées à 50 Mo par l'application ; adapter `upload_max_filesize` et `post_max_size` de PHP en conséquence
+   (ou utiliser un lien YouTube/Vimeo).
 
 ## Modules
 
@@ -45,7 +60,8 @@ Ouvrir `http://127.0.0.1:8000`.
 | Établissements (consulter) | ✓ | ✓ |
 | Établissements (créer/modifier/supprimer) | ✓ | — |
 | Calendrier (consulter) | ✓ | ✓ |
-| Calendrier (créer/modifier/supprimer) | ✓ | — |
+| Calendrier (créer/modifier) | ✓ | ✓ |
+| Calendrier (supprimer) | ✓ | — |
 | Exports | ✓ | ✓ |
 | Paramètres (utilisateurs, config, journal) | ✓ | — |
 

@@ -9,14 +9,22 @@
 
 <section class="section">
   <div class="wrap">
+    <form class="search-bar" method="GET" action="{{ route('site.activites') }}">
+      @if ($categorie)<input type="hidden" name="categorie" value="{{ $categorie }}">@endif
+      @if ($periode === 'passees')<input type="hidden" name="periode" value="passees">@endif
+      <input type="search" name="q" value="{{ $q }}" placeholder="Rechercher une activité, un lieu…" aria-label="Rechercher"/>
+      <button class="btn btn-green" type="submit"><i class="fas fa-search"></i> Rechercher</button>
+      @if ($q !== '')<a class="chip" href="{{ route('site.activites', array_filter(['categorie' => $categorie, 'periode' => $periode === 'passees' ? 'passees' : null])) }}">Effacer</a>@endif
+    </form>
+
     <div class="filters">
-      <a class="chip {{ ! $categorie ? 'on' : '' }}" href="{{ route('site.activites', ['periode' => $periode]) }}">Toutes</a>
+      <a class="chip {{ ! $categorie ? 'on' : '' }}" href="{{ route('site.activites', array_filter(['periode' => $periode === 'passees' ? 'passees' : null, 'q' => $q])) }}">Toutes</a>
       @foreach (\App\Models\Activite::CATEGORIES as $cle => $label)
-        <a class="chip {{ $categorie === $cle ? 'on' : '' }}" href="{{ route('site.activites', ['categorie' => $cle, 'periode' => $periode]) }}">{{ $label }}</a>
+        <a class="chip {{ $categorie === $cle ? 'on' : '' }}" href="{{ route('site.activites', array_filter(['categorie' => $cle, 'periode' => $periode === 'passees' ? 'passees' : null, 'q' => $q])) }}">{{ $label }}</a>
       @endforeach
       <span class="sep"></span>
-      <a class="chip {{ $periode === 'a_venir' ? 'on' : '' }}" href="{{ route('site.activites', array_filter(['categorie' => $categorie])) }}">À venir</a>
-      <a class="chip {{ $periode === 'passees' ? 'on' : '' }}" href="{{ route('site.activites', array_filter(['categorie' => $categorie, 'periode' => 'passees'])) }}">Passées</a>
+      <a class="chip {{ $periode === 'a_venir' ? 'on' : '' }}" href="{{ route('site.activites', array_filter(['categorie' => $categorie, 'q' => $q])) }}">À venir</a>
+      <a class="chip {{ $periode === 'passees' ? 'on' : '' }}" href="{{ route('site.activites', array_filter(['categorie' => $categorie, 'periode' => 'passees', 'q' => $q])) }}">Passées</a>
     </div>
 
     @if ($activites->isEmpty())

@@ -9,7 +9,7 @@
     <p>Formations, ateliers, événements et accompagnement personnalisé : retrouvez toutes les activités du Point de Présence Numérique.</p>
     <div class="hero-actions">
       <a class="btn btn-green" href="{{ route('site.activites') }}"><i class="fas fa-calendar-days"></i> Voir les activités</a>
-      <a class="btn btn-ghost" href="#contact"><i class="fas fa-envelope"></i> Nous contacter</a>
+      <a class="btn btn-ghost" href="{{ route('site.contact') }}"><i class="fas fa-envelope"></i> Nous contacter</a>
     </div>
   </div>
 </section>

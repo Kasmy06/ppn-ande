@@ -11,7 +11,7 @@ class Media extends Model
 {
     protected $table = 'medias';
 
-    protected $fillable = ['titre', 'type', 'legende', 'fichier_path', 'video_url', 'activite_id', 'publie'];
+    protected $fillable = ['titre', 'type', 'legende', 'fichier_path', 'video_url', 'activite_id', 'publie', 'auto'];
 
     protected $casts = ['publie' => 'boolean'];
 

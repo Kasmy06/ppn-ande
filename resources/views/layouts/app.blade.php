@@ -57,6 +57,12 @@
     <a class="nav-item {{ request()->routeIs('medias.*') ? 'active' : '' }}" href="{{ route('medias.index') }}">
       <i class="fas fa-photo-film"></i> Photos & vidéos
     </a>
+    <a class="nav-item {{ request()->routeIs('messages.*') ? 'active' : '' }}" href="{{ route('messages.index') }}">
+      <i class="fas fa-inbox"></i> Messages
+      @if (($nonLusMessages = \App\Models\MessageContact::where('lu', false)->count()) > 0)
+        <span class="nav-badge">{{ $nonLusMessages }}</span>
+      @endif
+    </a>
     <a class="nav-item {{ request()->routeIs('calendrier.*') ? 'active' : '' }}" href="{{ route('calendrier.index') }}">
       <i class="fas fa-calendar-days"></i> Calendrier
     </a>
