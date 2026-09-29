@@ -28,13 +28,21 @@ class SiteController extends Controller
         ]);
     }
 
-    public function annonces(): View
+    public function annonces(Request $request): View
     {
         abort_unless(SiteInfo::page('annonces'), 404);
 
-        return view('site.annonces', [
-            'annonces' => Annonce::publie()->enCours()->orderByDesc('urgente')->orderByDesc('date_publication')->paginate(10),
-        ]);
+        $q = trim((string) $request->query('q'));
+
+        $annonces = Annonce::publie()->enCours()
+            ->when($q !== '', fn ($query) => $query->where(function ($w) use ($q) {
+                $like = '%'.str_replace(['%', '_'], ['\%', '\_'], $q).'%';
+                $w->where('titre', 'like', $like)->orWhere('contenu', 'like', $like);
+            }))
+            ->orderByDesc('urgente')->orderByDesc('date_publication')
+            ->paginate(10)->withQueryString();
+
+        return view('site.annonces', compact('annonces', 'q'));
     }
 
     public function activites(Request $request): View
@@ -119,14 +127,19 @@ class SiteController extends Controller
         abort_unless(SiteInfo::page('galerie'), 404);
 
         $type = in_array($request->query('type'), ['photo', 'video'], true) ? $request->query('type') : null;
+        $q = trim((string) $request->query('q'));
 
         $medias = Media::publie()
-            ->when($type, fn ($q) => $q->where('type', $type))
+            ->when($type, fn ($query) => $query->where('type', $type))
+            ->when($q !== '', fn ($query) => $query->where(function ($w) use ($q) {
+                $like = '%'.str_replace(['%', '_'], ['\%', '\_'], $q).'%';
+                $w->where('titre', 'like', $like)->orWhere('legende', 'like', $like);
+            }))
             ->latest()
             ->paginate(12)
             ->withQueryString();
 
-        return view('site.galerie', compact('medias', 'type'));
+        return view('site.galerie', compact('medias', 'type', 'q'));
     }
 
     public function aPropos(): View

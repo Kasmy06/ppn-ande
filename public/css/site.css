@@ -229,3 +229,11 @@ img { max-width: 100%; display: block; }
   .cf-item { width: 185px; margin-left: -92px; margin-top: -77px; }
   .cf-arrow { font-size: 1.9rem; }
 }
+
+/* Impression : garde l'essentiel (contenu de l'activité) pour un affichage papier, sans la navigation du site. */
+@media print {
+  .site-header, .site-footer, .lightbox, .am-overlay, .no-print { display: none !important; }
+  main { padding-top: 0; }
+  .detail { grid-template-columns: 1fr; }
+  a[href]::after { content: none !important; }
+}

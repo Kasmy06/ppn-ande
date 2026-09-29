@@ -140,4 +140,14 @@ class AnnonceTest extends TestCase
         $this->get('/annonces')->assertDontSee($piege, false);
         $this->get('/')->assertDontSee($piege, false);
     }
+
+    public function test_search_filters_announcements(): void
+    {
+        Annonce::create(['titre' => 'Fermeture exceptionnelle', 'contenu' => 'x', 'date_publication' => '2026-01-01', 'publie' => true]);
+        Annonce::create(['titre' => 'Inscriptions ouvertes', 'contenu' => 'Formation bureautique disponible', 'date_publication' => '2026-01-01', 'publie' => true]);
+
+        $this->get('/annonces?q=fermeture')->assertSee('Fermeture exceptionnelle')->assertDontSee('Inscriptions ouvertes');
+        $this->get('/annonces?q=bureautique')->assertSee('Inscriptions ouvertes')->assertDontSee('Fermeture exceptionnelle');
+        $this->get('/annonces?q=introuvable')->assertSee('Aucune annonce ne correspond');
+    }
 }

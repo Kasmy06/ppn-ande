@@ -39,10 +39,11 @@ ou à supprimer si vous préférez repartir de zéro.
 
 ## Site public
 
-Le site vitrine est servi à la racine (`/`) : accueil, annonces, à propos, activités (recherche, filtres), agenda mensuel,
-galerie photos/vidéos et formulaire de contact. Les coordonnées, horaires, texte de présentation et carte se règlent dans
-**Paramètres > Application** ; les annonces, activités et médias se gèrent dans le menu de l'espace équipe, et les messages reçus
-dans **Messages**.
+Le site vitrine est servi à la racine (`/`) : accueil, annonces (recherche), à propos, activités (recherche, filtres), agenda
+mensuel, galerie photos/vidéos (recherche, filtres) et formulaire de contact. Les coordonnées, horaires, texte de présentation
+et carte se règlent dans **Paramètres > Application** ; les annonces, activités et médias se gèrent dans le menu de l'espace
+équipe, et les messages reçus dans **Messages**. La page d'une activité a un bouton « Imprimer » (mise en page épurée, sans
+menu ni pied de page) pour l'afficher sur un panneau physique.
 
 **Annonces** (menu « Annonces (site) ») : pour les informations courtes et datées — fermeture exceptionnelle, nouveaux horaires,
 inscriptions ouvertes — distinctes des activités programmées. Une annonce cochée « urgente » est mise en avant en rouge, en tête

@@ -23,7 +23,10 @@
       <h2 style="margin:32px 0 14px;font-size:1.3rem;color:var(--violet)">Photos &amp; vidéos</h2>
       <div class="media-grid">@foreach ($medias as $m) @include('site._media', ['m' => $m]) @endforeach</div>
     @endif
-    <p style="margin-top:28px"><a href="{{ route('site.activites') }}"><i class="fas fa-arrow-left"></i> Retour aux activités</a></p>
+    <p class="no-print" style="margin-top:28px;display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+      <a href="{{ route('site.activites') }}"><i class="fas fa-arrow-left"></i> Retour aux activités</a>
+      <button type="button" class="btn btn-outline" onclick="window.print()"><i class="fas fa-print"></i> Imprimer</button>
+    </p>
   </article>
 
   <aside class="aside-box">
@@ -39,12 +42,12 @@
       @if ($activite->horaires)<li><i class="fas fa-clock"></i><div><span>Horaires</span>{{ $activite->horaires }}</div></li>@endif
       @if ($activite->lieu)<li><i class="fas fa-location-dot"></i><div><span>Lieu</span>{{ $activite->lieu }}</div></li>@endif
     </ul>
-    @if (\App\Support\SiteInfo::page('contact'))<a class="btn btn-green" href="{{ route('site.contact') }}" style="width:100%;justify-content:center"><i class="fas fa-envelope"></i> Nous contacter</a>@endif
+    @if (\App\Support\SiteInfo::page('contact'))<a class="btn btn-green no-print" href="{{ route('site.contact') }}" style="width:100%;justify-content:center"><i class="fas fa-envelope"></i> Nous contacter</a>@endif
   </aside>
 </div>
 
 @if ($similaires->isNotEmpty())
-<section class="section alt">
+<section class="section alt no-print">
   <div class="wrap">
     <div class="section-head"><h2>Dans la même catégorie</h2></div>
     <div class="grid">@foreach ($similaires as $a) @include('site._carte', ['a' => $a]) @endforeach</div>

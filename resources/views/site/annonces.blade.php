@@ -10,8 +10,14 @@
 
 <section class="section">
   <div class="wrap">
+    <form class="search-bar" method="GET" action="{{ route('site.annonces') }}">
+      <input type="search" name="q" value="{{ $q }}" placeholder="Rechercher une annonce…" aria-label="Rechercher"/>
+      <button class="btn btn-green" type="submit"><i class="fas fa-search"></i> Rechercher</button>
+      @if ($q !== '')<a class="chip" href="{{ route('site.annonces') }}">Effacer</a>@endif
+    </form>
+
     @if ($annonces->isEmpty())
-      <p class="empty">Aucune annonce pour le moment.</p>
+      <p class="empty">{{ $q !== '' ? 'Aucune annonce ne correspond à votre recherche.' : 'Aucune annonce pour le moment.' }}</p>
     @else
       <div class="annonces-list">@foreach ($annonces as $a) @include('site._annonce', ['a' => $a]) @endforeach</div>
 
