@@ -78,6 +78,57 @@ class PublicationTest extends TestCase
         $this->get('/contact')->assertSee('Rue Cachée')->assertSee('+225 01 02 03 04 05');
     }
 
+    public function test_reseau_ppn_section_is_editable_from_the_dashboard(): void
+    {
+        // Par défaut (rien de configuré) : le texte et les villes fournis par l'utilisateur s'affichent tels quels.
+        $this->get('/a-propos')->assertOk()
+            ->assertSee("l'Université Virtuelle de Côte d'Ivoire")
+            ->assertSee('Cocody, Koumassi', false)
+            ->assertSee('Andé', false);
+
+        $this->actingAs(User::factory()->superAdmin()->create());
+        $params = ['nom_structure' => 'PPN', 'capacite_journaliere' => 60];
+
+        // Modifier : le nouveau texte et les nouvelles villes remplacent les valeurs par défaut.
+        $this->put('/parametres/application', $params + [
+            'reseau_texte' => 'Texte personnalisé sur le réseau des PPN.',
+            'reseau_villes_urbaines' => 'San-Pédro, Yamoussoukro',
+            'reseau_villes_rurales' => 'Dabakala, Andé, Zouan-Hounien',
+        ])->assertSessionHasNoErrors();
+
+        $reponse = $this->get('/a-propos')->assertOk()
+            ->assertSee('Texte personnalisé sur le réseau des PPN.')
+            ->assertSee('San-Pédro, Yamoussoukro', false)
+            ->assertSee('Dabakala', false)->assertSee('Zouan-Hounien', false)
+            ->assertDontSee("l'Université Virtuelle de Côte d'Ivoire");
+        // « Andé » reste mis en valeur (gras + couleur) même dans une liste modifiée par l'utilisateur.
+        $reponse->assertSee('<strong style="color:var(--magenta)">Andé</strong>', false);
+
+        // Ajouter une ville revient simplement à compléter la liste depuis le tableau de bord.
+        $this->put('/parametres/application', $params + [
+            'reseau_texte' => 'Texte personnalisé sur le réseau des PPN.',
+            'reseau_villes_urbaines' => 'San-Pédro, Yamoussoukro, Korhogo',
+            'reseau_villes_rurales' => 'Dabakala, Andé, Zouan-Hounien',
+        ]);
+        $this->get('/a-propos')->assertSee('Korhogo', false);
+
+        // Le formulaire des paramètres présente la valeur actuellement affichée publiquement (par défaut ou personnalisée).
+        $this->get('/parametres/application')->assertSee('San-Pédro, Yamoussoukro, Korhogo', false);
+    }
+
+    public function test_malicious_reseau_ppn_input_is_escaped(): void
+    {
+        $this->actingAs(User::factory()->superAdmin()->create());
+        $piege = '<script>alert(1)</script>';
+
+        $this->put('/parametres/application', [
+            'nom_structure' => 'PPN', 'capacite_journaliere' => 60,
+            'reseau_texte' => $piege, 'reseau_villes_urbaines' => $piege, 'reseau_villes_rurales' => 'Andé, '.$piege,
+        ]);
+
+        $this->get('/a-propos')->assertDontSee($piege, false);
+    }
+
     public function test_pages_can_be_switched_off(): void
     {
         $this->actingAs(User::factory()->superAdmin()->create());

@@ -49,6 +49,10 @@ inscriptions ouvertes — distinctes des activités programmées. Une annonce co
 de la page Annonces et de l'accueil, et une annonce peut avoir une date d'expiration après laquelle elle disparaît du site sans
 être supprimée.
 
+**À propos** : la section « Le réseau des PPN de l'UVCI » (texte d'introduction, villes des zones urbaines, villes du milieu
+rural) se modifie ou se complète dans **Paramètres > Application**, comme le reste de la présentation. « Andé » est mis en
+valeur automatiquement dès qu'il figure dans la liste des villes rurales.
+
 ### Contrôle de ce qui est public
 
 - Les **annonces**, **activités** et **médias** sont créés en **brouillon** : rien n'est visible du public tant que le Super Admin ne clique pas sur

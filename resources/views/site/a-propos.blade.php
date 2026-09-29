@@ -7,6 +7,8 @@
   use App\Support\SiteInfo;
   $texte = SiteInfo::aPropos();
   $horaires = SiteInfo::horaires();
+  // « Andé » est mis en valeur automatiquement s'il figure dans la liste des villes rurales.
+  $villesRurales = preg_replace('/and[ée]/iu', '<strong style="color:var(--magenta)">$0</strong>', e(SiteInfo::reseauVillesRurales()));
 @endphp
 
 @section('content')
@@ -49,7 +51,7 @@
     <div class="section-head">
       <div><h2>Le réseau des PPN de l'UVCI</h2><p>Andé fait partie d'un réseau national de centres numériques de proximité.</p></div>
     </div>
-    <p class="prose" style="max-width:760px">Les Points de Présence Numérique (PPN) de l'Université Virtuelle de Côte d'Ivoire (UVCI) sont des centres physiques locaux créés pour rapprocher l'université numérique des étudiants et des populations, tant en zone urbaine que rurale.</p>
+    <p class="prose" style="max-width:760px">{{ SiteInfo::reseauTexte() }}</p>
 
     <div class="features" style="margin-top:28px">
       <div class="feature">
@@ -73,8 +75,8 @@
       <i class="fas fa-map-location-dot"></i>
       <h3>Où trouver un PPN ?</h3>
       <p style="margin-bottom:10px">Le réseau compte des centres aussi bien dans les grandes villes qu'en milieu rural.</p>
-      <p><strong style="color:var(--text)">Abidjan et grandes villes :</strong> Cocody, Koumassi, Abobo (Nord et Sud), Bouaké, Grand-Bassam.</p>
-      <p style="margin-top:6px"><strong style="color:var(--text)">Milieu rural :</strong> Dingouin, <strong style="color:var(--magenta)">Andé</strong> (ici même), Moofoué, et d'autres localités qui accueillent aussi des PPN pour dynamiser l'inclusion numérique des jeunes ruraux.</p>
+      <p><strong style="color:var(--text)">Abidjan et grandes villes :</strong> {{ SiteInfo::reseauVillesUrbaines() }}.</p>
+      <p style="margin-top:6px"><strong style="color:var(--text)">Milieu rural :</strong> {!! $villesRurales !!}.</p>
     </div>
   </div>
 </section>

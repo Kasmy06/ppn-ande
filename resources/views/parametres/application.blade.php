@@ -102,6 +102,25 @@
         @error('a_propos') <div class="field-error">{{ $message }}</div> @enderror
       </div>
       <div class="form-group">
+        <label>Réseau des PPN (texte d'introduction, page « À propos »)</label>
+        <textarea class="form-control" name="reseau_texte" rows="4">{{ old('reseau_texte', $contact['reseau_texte']) }}</textarea>
+        @error('reseau_texte') <div class="field-error">{{ $message }}</div> @enderror
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Villes du réseau — zones urbaines</label>
+          <input class="form-control" type="text" name="reseau_villes_urbaines" value="{{ old('reseau_villes_urbaines', $contact['reseau_villes_urbaines']) }}" placeholder="Cocody, Koumassi, Abobo (Nord et Sud)…"/>
+          <p style="font-size:0.75rem;color:var(--muted);margin-top:0.4rem;">Séparez les villes par une virgule.</p>
+          @error('reseau_villes_urbaines') <div class="field-error">{{ $message }}</div> @enderror
+        </div>
+        <div class="form-group">
+          <label>Villes du réseau — milieu rural</label>
+          <input class="form-control" type="text" name="reseau_villes_rurales" value="{{ old('reseau_villes_rurales', $contact['reseau_villes_rurales']) }}" placeholder="Dingouin, Andé, Moofoué…"/>
+          <p style="font-size:0.75rem;color:var(--muted);margin-top:0.4rem;">« Andé » est automatiquement mis en valeur s'il figure dans la liste.</p>
+          @error('reseau_villes_rurales') <div class="field-error">{{ $message }}</div> @enderror
+        </div>
+      </div>
+      <div class="form-group">
         <label>Carte (adresse d'intégration)</label>
         <input class="form-control" type="url" name="carte_url" value="{{ old('carte_url', $contact['carte_url']) }}" placeholder="https://www.google.com/maps/embed?pb=..."/>
         <p style="font-size:0.75rem;color:var(--muted);margin-top:0.4rem;">Google Maps → Partager → Intégrer une carte → copiez uniquement l'adresse qui suit <code>src="</code>.</p>

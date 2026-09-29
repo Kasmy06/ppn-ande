@@ -103,6 +103,22 @@ class SiteInfo
         return ParametreApplication::get('a_propos') ?: null;
     }
 
+    /** Présentation du réseau des PPN (page « À propos »), modifiable dans Paramètres > Application. */
+    public static function reseauTexte(): string
+    {
+        return ParametreApplication::get('reseau_texte') ?: "Les Points de Présence Numérique (PPN) de l'Université Virtuelle de Côte d'Ivoire (UVCI) sont des centres physiques locaux créés pour rapprocher l'université numérique des étudiants et des populations, tant en zone urbaine que rurale.";
+    }
+
+    public static function reseauVillesUrbaines(): string
+    {
+        return ParametreApplication::get('reseau_villes_urbaines') ?: 'Cocody, Koumassi, Abobo (Nord et Sud), Bouaké, Grand-Bassam';
+    }
+
+    public static function reseauVillesRurales(): string
+    {
+        return ParametreApplication::get('reseau_villes_rurales') ?: 'Dingouin, Andé, Moofoué';
+    }
+
     /** Adresse d'intégration (iframe) Google Maps ou OpenStreetMap, seulement si elle est reconnue et affichée. */
     public static function carteUrl(): ?string
     {
