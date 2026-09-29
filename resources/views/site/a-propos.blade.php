@@ -43,4 +43,39 @@
     @endif
   </div>
 </section>
+
+<section class="section alt">
+  <div class="wrap">
+    <div class="section-head">
+      <div><h2>Le réseau des PPN de l'UVCI</h2><p>Andé fait partie d'un réseau national de centres numériques de proximité.</p></div>
+    </div>
+    <p class="prose" style="max-width:760px">Les Points de Présence Numérique (PPN) de l'Université Virtuelle de Côte d'Ivoire (UVCI) sont des centres physiques locaux créés pour rapprocher l'université numérique des étudiants et des populations, tant en zone urbaine que rurale.</p>
+
+    <div class="features" style="margin-top:28px">
+      <div class="feature">
+        <i class="fas fa-wifi"></i>
+        <h3>Accès au numérique</h3>
+        <p>Un espace de connexion Internet, de travail et de formation pour réduire la fracture numérique.</p>
+      </div>
+      <div class="feature">
+        <i class="fas fa-route"></i>
+        <h3>Proximité</h3>
+        <p>Suivre ses cours en ligne, participer à des activités académiques ou recevoir une assistance sans avoir à se déplacer constamment vers Abidjan.</p>
+      </div>
+      <div class="feature">
+        <i class="fas fa-seedling"></i>
+        <h3>Développement local</h3>
+        <p>Un relais communautaire — parfois associé à des radios locales ou des incubateurs technologiques — pour l'insertion professionnelle et l'innovation sociale.</p>
+      </div>
+    </div>
+
+    <div class="feature" style="margin-top:28px;max-width:760px">
+      <i class="fas fa-map-location-dot"></i>
+      <h3>Où trouver un PPN ?</h3>
+      <p style="margin-bottom:10px">Le réseau compte des centres aussi bien dans les grandes villes qu'en milieu rural.</p>
+      <p><strong style="color:var(--text)">Abidjan et grandes villes :</strong> Cocody, Koumassi, Abobo (Nord et Sud), Bouaké, Grand-Bassam.</p>
+      <p style="margin-top:6px"><strong style="color:var(--text)">Milieu rural :</strong> Dingouin, <strong style="color:var(--magenta)">Andé</strong> (ici même), Moofoué, et d'autres localités qui accueillent aussi des PPN pour dynamiser l'inclusion numérique des jeunes ruraux.</p>
+    </div>
+  </div>
+</section>
 @endsection
