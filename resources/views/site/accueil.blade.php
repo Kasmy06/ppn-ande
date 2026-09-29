@@ -6,14 +6,18 @@
 @if ($annonces->isNotEmpty())
 <section class="section" style="padding-bottom:0">
   <div class="wrap">
-    <div class="annonce-carousel">
-      <button type="button" class="ac-nav ac-prev" aria-label="Annonce précédente"><i class="fas fa-chevron-left"></i></button>
-      <div class="ac-track" id="annonceTrack">
+    <div class="cf-wrap">
+      <button type="button" class="cf-arrow cf-prev" aria-label="Annonce précédente">&lsaquo;</button>
+      <div class="cf-stage" id="cfStage">
         @foreach ($annonces as $a)
-          <div class="ac-slide">@include('site._annonce', ['a' => $a])</div>
+          <div class="cf-item">@include('site._annonce-cover', ['a' => $a])</div>
         @endforeach
       </div>
-      <button type="button" class="ac-nav ac-next" aria-label="Annonce suivante"><i class="fas fa-chevron-right"></i></button>
+      <button type="button" class="cf-arrow cf-next" aria-label="Annonce suivante">&rsaquo;</button>
+    </div>
+    <div class="cf-info" id="cfInfo">
+      <div class="cf-info-date"></div>
+      <h3 class="cf-info-title"></h3>
     </div>
     @if (\App\Support\SiteInfo::page('annonces'))
       <p style="margin-top:14px"><a href="{{ route('site.annonces') }}">Toutes les annonces <i class="fas fa-arrow-right"></i></a></p>
@@ -22,15 +26,56 @@
 </section>
 <script>
 (function () {
-  var track = document.getElementById('annonceTrack');
-  if (!track) return;
-  var prev = document.querySelector('.ac-prev'), next = document.querySelector('.ac-next');
-  function pas() {
-    var slide = track.querySelector('.ac-slide');
-    return slide ? slide.getBoundingClientRect().width + 16 : 300;
+  var stage = document.getElementById('cfStage');
+  if (!stage) return;
+  var items = Array.prototype.slice.call(stage.querySelectorAll('.cf-item'));
+  var total = items.length;
+  var actif = 0;
+  var infoDate = document.querySelector('#cfInfo .cf-info-date');
+  var infoTitre = document.querySelector('#cfInfo .cf-info-title');
+
+  function placer() {
+    items.forEach(function (item, i) {
+      var ecart = i - actif;
+      if (ecart > total / 2) ecart -= total;
+      if (ecart < -total / 2) ecart += total;
+      var abs = Math.abs(ecart);
+      var visible = abs <= 2;
+      var tx = ecart * 145;
+      var rot = ecart === 0 ? 0 : (ecart > 0 ? -42 : 42);
+      var echelle = abs === 0 ? 1 : (abs === 1 ? 0.8 : 0.62);
+      var opacite = abs === 0 ? 1 : (abs === 1 ? 0.75 : (abs === 2 ? 0.35 : 0));
+      item.style.transform = 'translateX(' + tx + 'px) rotateY(' + rot + 'deg) scale(' + echelle + ')';
+      item.style.opacity = opacite;
+      item.style.zIndex = 100 - abs;
+      item.style.pointerEvents = visible ? 'auto' : 'none';
+      item.classList.toggle('cf-actif', ecart === 0);
+    });
+    var carte = items[actif].querySelector('.cf-card');
+    if (infoDate) infoDate.textContent = carte.dataset.date;
+    if (infoTitre) infoTitre.innerHTML = (carte.dataset.urgente === '1' ? '<span class="cf-info-flag">Urgent</span> ' : '') + carte.dataset.titre;
   }
-  if (prev) prev.addEventListener('click', function () { track.scrollBy({ left: -pas(), behavior: 'smooth' }); });
-  if (next) next.addEventListener('click', function () { track.scrollBy({ left: pas(), behavior: 'smooth' }); });
+
+  items.forEach(function (item, i) {
+    item.addEventListener('click', function () { actif = i; placer(); });
+  });
+
+  var prev = document.querySelector('.cf-prev'), next = document.querySelector('.cf-next');
+  if (prev) prev.addEventListener('click', function () { actif = (actif - 1 + total) % total; placer(); });
+  if (next) next.addEventListener('click', function () { actif = (actif + 1) % total; placer(); });
+
+  // Glissement au doigt sur mobile.
+  var depart = null;
+  stage.addEventListener('touchstart', function (e) { depart = e.touches[0].clientX; }, { passive: true });
+  stage.addEventListener('touchend', function (e) {
+    if (depart === null) return;
+    var delta = e.changedTouches[0].clientX - depart;
+    if (delta > 40) { actif = (actif - 1 + total) % total; placer(); }
+    else if (delta < -40) { actif = (actif + 1) % total; placer(); }
+    depart = null;
+  });
+
+  placer();
 })();
 </script>
 @endif
