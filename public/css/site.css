@@ -206,26 +206,26 @@ img { max-width: 100%; display: block; }
 .annonce-body p { color: var(--text); font-size: .88rem; white-space: pre-line; }
 
 /* Carrousel « coverflow » des annonces (accueil) : carte centrale bien en face, les autres inclinées en 3D. */
-.cf-wrap { position: relative; max-width: 620px; margin: 0 auto; background: linear-gradient(160deg, #2a1533, #150a1c); border-radius: 18px; padding: 26px 54px; }
-.cf-stage { position: relative; height: 150px; perspective: 1000px; }
-.cf-item { position: absolute; top: 50%; left: 50%; width: 190px; height: 100%; margin-left: -95px; margin-top: -75px; transition: transform .45s cubic-bezier(.22,.68,.32,1), opacity .45s ease; transform-style: preserve-3d; cursor: pointer; }
+.cf-wrap { position: relative; max-width: 820px; margin: 0 auto; background: linear-gradient(160deg, #2a1533, #150a1c); border-radius: 20px; padding: 36px 64px; }
+.cf-stage { position: relative; height: 200px; perspective: 1100px; }
+.cf-item { position: absolute; top: 50%; left: 50%; width: 240px; height: 100%; margin-left: -120px; margin-top: -100px; transition: transform .45s cubic-bezier(.22,.68,.32,1), opacity .45s ease; transform-style: preserve-3d; cursor: pointer; }
 .cf-item.cf-actif { cursor: zoom-in; }
 .cf-card { position: relative; width: 100%; height: 100%; border-radius: 10px; overflow: hidden; box-shadow: 0 12px 26px rgba(0,0,0,.4); background: #1a0f22; }
 .cf-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .cf-noimg { width: 100%; height: 100%; background: linear-gradient(135deg, var(--violet), var(--magenta)); display: grid; place-items: center; color: rgba(255,255,255,.85); font-size: 1.7rem; }
 .cf-flag { position: absolute; top: 7px; right: 7px; background: #dc2626; color: #fff; font-size: .6rem; font-weight: 700; padding: 2px 8px; border-radius: 999px; text-transform: uppercase; letter-spacing: .03em; }
-.cf-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: none; border: 0; color: rgba(255,255,255,.5); font-size: 1.9rem; line-height: 1; padding: 8px; cursor: pointer; transition: color .15s; z-index: 200; }
+.cf-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: none; border: 0; color: rgba(255,255,255,.5); font-size: 2.3rem; line-height: 1; padding: 8px; cursor: pointer; transition: color .15s; z-index: 200; }
 .cf-arrow:hover { color: #fff; }
-.cf-prev { left: 6px; }
-.cf-next { right: 6px; }
-.cf-info { text-align: center; margin-top: 14px; cursor: pointer; }
+.cf-prev { left: 8px; }
+.cf-next { right: 8px; }
+.cf-info { text-align: center; margin-top: 18px; cursor: pointer; }
 .cf-info:hover .cf-info-title { text-decoration: underline; }
-.cf-info-date { font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
-.cf-info-title { font-size: 1.02rem; color: var(--violet); margin-top: 2px; }
-.cf-info-flag { background: #dc2626; color: #fff; font-size: .64rem; font-weight: 700; padding: 2px 8px; border-radius: 999px; text-transform: uppercase; letter-spacing: .03em; vertical-align: middle; }
+.cf-info-date { font-size: .8rem; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+.cf-info-title { font-size: 1.3rem; color: var(--violet); margin-top: 3px; }
+.cf-info-flag { background: #dc2626; color: #fff; font-size: .68rem; font-weight: 700; padding: 3px 9px; border-radius: 999px; text-transform: uppercase; letter-spacing: .03em; vertical-align: middle; }
 @media (max-width: 640px) {
-  .cf-wrap { max-width: 100%; padding: 20px 40px; }
-  .cf-stage { height: 120px; }
-  .cf-item { width: 150px; margin-left: -75px; margin-top: -60px; }
-  .cf-arrow { font-size: 1.6rem; }
+  .cf-wrap { max-width: 100%; padding: 26px 44px; }
+  .cf-stage { height: 155px; }
+  .cf-item { width: 185px; margin-left: -92px; margin-top: -77px; }
+  .cf-arrow { font-size: 1.9rem; }
 }
