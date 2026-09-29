@@ -20,7 +20,7 @@ class SiteController extends Controller
     {
         return view('site.accueil', [
             'annonces' => SiteInfo::page('annonces')
-                ? Annonce::publie()->enCours()->orderByDesc('urgente')->orderByDesc('date_publication')->limit(3)->get()
+                ? Annonce::publie()->enCours()->orderByDesc('urgente')->orderByDesc('date_publication')->limit(8)->get()
                 : collect(),
             'prochaines' => Activite::publie()->aVenir()->orderBy('date_debut')->limit(3)->get(),
             'recentes' => Activite::publie()->orderByDesc('date_debut')->limit(3)->get(),

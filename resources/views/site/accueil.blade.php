@@ -6,12 +6,33 @@
 @if ($annonces->isNotEmpty())
 <section class="section" style="padding-bottom:0">
   <div class="wrap">
-    <div class="annonces-list">@foreach ($annonces as $a) @include('site._annonce', ['a' => $a]) @endforeach</div>
+    <div class="annonce-carousel">
+      <button type="button" class="ac-nav ac-prev" aria-label="Annonce précédente"><i class="fas fa-chevron-left"></i></button>
+      <div class="ac-track" id="annonceTrack">
+        @foreach ($annonces as $a)
+          <div class="ac-slide">@include('site._annonce', ['a' => $a])</div>
+        @endforeach
+      </div>
+      <button type="button" class="ac-nav ac-next" aria-label="Annonce suivante"><i class="fas fa-chevron-right"></i></button>
+    </div>
     @if (\App\Support\SiteInfo::page('annonces'))
       <p style="margin-top:14px"><a href="{{ route('site.annonces') }}">Toutes les annonces <i class="fas fa-arrow-right"></i></a></p>
     @endif
   </div>
 </section>
+<script>
+(function () {
+  var track = document.getElementById('annonceTrack');
+  if (!track) return;
+  var prev = document.querySelector('.ac-prev'), next = document.querySelector('.ac-next');
+  function pas() {
+    var slide = track.querySelector('.ac-slide');
+    return slide ? slide.getBoundingClientRect().width + 16 : 300;
+  }
+  if (prev) prev.addEventListener('click', function () { track.scrollBy({ left: -pas(), behavior: 'smooth' }); });
+  if (next) next.addEventListener('click', function () { track.scrollBy({ left: pas(), behavior: 'smooth' }); });
+})();
+</script>
 @endif
 <section class="hero">
   <div class="wrap">
