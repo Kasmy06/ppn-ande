@@ -105,4 +105,28 @@ class AnnonceTest extends TestCase
     {
         $this->get('/sitemap.xml')->assertSee(route('site.annonces'), false);
     }
+
+    public function test_full_content_and_image_are_available_for_the_detail_popup(): void
+    {
+        Storage::fake('public');
+        $texteLong = str_repeat('Ceci est le détail complet de l\'annonce, avec des informations importantes. ', 5);
+        $annonce = Annonce::create([
+            'titre' => 'Détails complets',
+            'contenu' => $texteLong,
+            'date_publication' => '2026-01-01',
+            'publie' => true,
+            'image_path' => 'annonces/photo.jpg',
+        ]);
+        $this->assertGreaterThan(160, strlen($texteLong));
+
+        // Page /annonces (grille) : chaque carte porte le contenu complet en attribut, pas seulement l'extrait visible.
+        $reponse = $this->get('/annonces')->assertOk();
+        $reponse->assertSee('annonce-trigger', false);
+        $reponse->assertSee('data-contenu="'.e($texteLong).'"', false);
+        $reponse->assertSee('data-image', false);
+
+        // Accueil (carrousel) : la carte porte aussi le contenu complet et l'image, pour la fenêtre de détail.
+        $this->get('/')->assertSee('data-contenu="'.e($texteLong).'"', false)
+            ->assertSee('data-image="'.Storage::disk('public')->url('annonces/photo.jpg').'"', false);
+    }
 }

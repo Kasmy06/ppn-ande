@@ -1,5 +1,5 @@
 @php $imageUrl = $a->image_path ? \Illuminate\Support\Facades\Storage::disk('public')->url($a->image_path) : null; @endphp
-<div class="cf-card" data-titre="{{ $a->titre }}" data-date="{{ $a->date_publication->translatedFormat('j F Y') }}" data-urgente="{{ $a->urgente ? '1' : '0' }}">
+<div class="cf-card" data-image="{{ $imageUrl }}" data-titre="{{ $a->titre }}" data-date="{{ $a->date_publication->translatedFormat('j F Y') }}" data-contenu="{{ $a->contenu }}" data-urgente="{{ $a->urgente ? '1' : '0' }}">
   @if ($imageUrl)
     <img src="{{ $imageUrl }}" alt="{{ $a->titre }}" loading="lazy"/>
   @else

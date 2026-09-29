@@ -56,9 +56,27 @@
     if (infoTitre) infoTitre.innerHTML = (carte.dataset.urgente === '1' ? '<span class="cf-info-flag">Urgent</span> ' : '') + carte.dataset.titre;
   }
 
+  function ouvrirActif() {
+    var carte = items[actif].querySelector('.cf-card');
+    if (window.ouvrirAnnonceModal) {
+      window.ouvrirAnnonceModal({
+        image: carte.dataset.image || '',
+        date: carte.dataset.date,
+        titre: carte.dataset.titre,
+        contenu: carte.dataset.contenu,
+        urgente: carte.dataset.urgente === '1',
+      });
+    }
+  }
+
   items.forEach(function (item, i) {
-    item.addEventListener('click', function () { actif = i; placer(); });
+    item.addEventListener('click', function () {
+      if (i === actif) { ouvrirActif(); } else { actif = i; placer(); }
+    });
   });
+
+  var info = document.getElementById('cfInfo');
+  if (info) info.addEventListener('click', ouvrirActif);
 
   var prev = document.querySelector('.cf-prev'), next = document.querySelector('.cf-next');
   if (prev) prev.addEventListener('click', function () { actif = (actif - 1 + total) % total; placer(); });

@@ -105,5 +105,54 @@
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
 })();
 </script>
+
+<div class="am-overlay" id="annonceModal" hidden>
+  <div class="am-box">
+    <button type="button" class="am-close" aria-label="Fermer">&times;</button>
+    <div class="am-img-wrap" id="amImgWrap"><img id="amImg" src="" alt=""/></div>
+    <div class="am-body">
+      <div class="am-date" id="amDate"></div>
+      <h3 id="amTitre"></h3>
+      <p id="amContenu"></p>
+    </div>
+  </div>
+</div>
+<script>
+(function () {
+  var modal = document.getElementById('annonceModal');
+  if (!modal) return;
+  var img = document.getElementById('amImg'), imgWrap = document.getElementById('amImgWrap');
+  var dateEl = document.getElementById('amDate'), titreEl = document.getElementById('amTitre'), contenuEl = document.getElementById('amContenu');
+
+  window.ouvrirAnnonceModal = function (data) {
+    if (data.image) { img.src = data.image; img.alt = data.titre; imgWrap.hidden = false; }
+    else { img.src = ''; imgWrap.hidden = true; }
+    dateEl.textContent = data.date;
+    titreEl.innerHTML = (data.urgente ? '<span class="am-flag">Urgent</span> ' : '') + data.titre;
+    contenuEl.textContent = data.contenu;
+    modal.hidden = false;
+    document.body.style.overflow = 'hidden';
+  };
+
+  function fermer() { modal.hidden = true; document.body.style.overflow = ''; }
+
+  // Ouverture générique pour toute carte marquée .annonce-trigger (grille de la page Annonces).
+  document.addEventListener('click', function (e) {
+    var el = e.target.closest('.annonce-trigger');
+    if (el) {
+      window.ouvrirAnnonceModal({
+        image: el.dataset.image || '',
+        date: el.dataset.date,
+        titre: el.dataset.titre,
+        contenu: el.dataset.contenu,
+        urgente: el.dataset.urgente === '1',
+      });
+    } else if (e.target === modal || e.target.closest('.am-close')) {
+      fermer();
+    }
+  });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && ! modal.hidden) fermer(); });
+})();
+</script>
 </body>
 </html>
