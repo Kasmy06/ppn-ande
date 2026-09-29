@@ -5,6 +5,11 @@ namespace Database\Seeders;
 use App\Models\Annonce;
 use Illuminate\Database\Seeder;
 
+/**
+ * Jeu d'exemples pour démarrer l'application. Créé en BROUILLON exprès : ce sont des annonces inventées
+ * (jamais des faits réels sur le PPN), qui ne doivent jamais apparaître au public sans qu'un membre de
+ * l'équipe les relise, les corrige et les publie lui-même.
+ */
 class AnnonceSeeder extends Seeder
 {
     public function run(): void
@@ -39,7 +44,7 @@ class AnnonceSeeder extends Seeder
                 'urgente' => $urgente,
                 'date_publication' => now()->modify($decalagePublication)->toDateString(),
                 'date_expiration' => $decalageExpiration ? now()->modify($decalageExpiration)->toDateString() : null,
-                'publie' => true,
+                'publie' => false,
             ]);
         }
     }

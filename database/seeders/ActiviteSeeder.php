@@ -5,6 +5,11 @@ namespace Database\Seeders;
 use App\Models\Activite;
 use Illuminate\Database\Seeder;
 
+/**
+ * Jeu d'exemples pour démarrer l'application. Créé en BROUILLON exprès : ce sont des textes et des dates
+ * inventés (jamais des faits réels sur le PPN), qui ne doivent jamais apparaître au public sans qu'un
+ * membre de l'équipe les relise, les corrige et les publie lui-même.
+ */
 class ActiviteSeeder extends Seeder
 {
     public function run(): void
@@ -25,7 +30,7 @@ class ActiviteSeeder extends Seeder
                 'date_debut' => now()->modify($decalage)->toDateString(),
                 'horaires' => $horaires,
                 'lieu' => $lieu,
-                'publie' => true,
+                'publie' => false,
             ]);
 
         }

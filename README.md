@@ -33,6 +33,10 @@ Ouvrir `http://127.0.0.1:8000`.
 avant le seed, sinon un mot de passe aléatoire est généré et affiché une seule fois dans la console.
 La connexion est limitée à 10 tentatives par minute.
 
+Le seed crée aussi quelques **activités et annonces d'exemple, volontairement en brouillon** (textes et dates inventés,
+jamais des faits réels sur le PPN) : à relire, corriger avec du vrai contenu et publier vous-même avant l'ouverture au public,
+ou à supprimer si vous préférez repartir de zéro.
+
 ## Site public
 
 Le site vitrine est servi à la racine (`/`) : accueil, annonces, à propos, activités (recherche, filtres), agenda mensuel,
