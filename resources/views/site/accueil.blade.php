@@ -3,6 +3,16 @@
 @section('title', "Accueil")
 
 @section('content')
+@if ($annonces->isNotEmpty())
+<section class="section" style="padding-bottom:0">
+  <div class="wrap">
+    <div class="annonces-list">@foreach ($annonces as $a) @include('site._annonce', ['a' => $a]) @endforeach</div>
+    @if (\App\Support\SiteInfo::page('annonces'))
+      <p style="margin-top:14px"><a href="{{ route('site.annonces') }}">Toutes les annonces <i class="fas fa-arrow-right"></i></a></p>
+    @endif
+  </div>
+</section>
+@endif
 <section class="hero">
   <div class="wrap">
     <h1>Le numérique à Andé, accessible à tous.</h1>

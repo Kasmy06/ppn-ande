@@ -35,17 +35,22 @@ La connexion est limitée à 10 tentatives par minute.
 
 ## Site public
 
-Le site vitrine est servi à la racine (`/`) : accueil, à propos, activités (recherche, filtres), agenda mensuel,
+Le site vitrine est servi à la racine (`/`) : accueil, annonces, à propos, activités (recherche, filtres), agenda mensuel,
 galerie photos/vidéos et formulaire de contact. Les coordonnées, horaires, texte de présentation et carte se règlent dans
-**Paramètres > Application** ; les activités et médias se gèrent dans le menu de l'espace équipe, et les messages reçus
+**Paramètres > Application** ; les annonces, activités et médias se gèrent dans le menu de l'espace équipe, et les messages reçus
 dans **Messages**.
+
+**Annonces** (menu « Annonces (site) ») : pour les informations courtes et datées — fermeture exceptionnelle, nouveaux horaires,
+inscriptions ouvertes — distinctes des activités programmées. Une annonce cochée « urgente » est mise en avant en rouge, en tête
+de la page Annonces et de l'accueil, et une annonce peut avoir une date d'expiration après laquelle elle disparaît du site sans
+être supprimée.
 
 ### Contrôle de ce qui est public
 
-- Les **activités** et **médias** sont créés en **brouillon** : rien n'est visible du public tant que le Super Admin ne clique pas sur
-  « Publier » (liste des activités / des médias). Les activités et médias ajoutés par un agent restent en brouillon jusqu'à validation ; l'agent peut consulter et ajouter, mais
+- Les **annonces**, **activités** et **médias** sont créés en **brouillon** : rien n'est visible du public tant que le Super Admin ne clique pas sur
+  « Publier » (liste des annonces / des activités / des médias). Les ajouts d'un agent restent en brouillon jusqu'à validation ; l'agent peut consulter et ajouter, mais
   seul le Super Admin peut modifier, supprimer et publier.
-- Dans **Paramètres > Application > « Ce que le public peut voir »**, chaque page (À propos, Agenda, Galerie, Contact) et chaque
+- Dans **Paramètres > Application > « Ce que le public peut voir »**, chaque page (Annonces, À propos, Agenda, Galerie, Contact) et chaque
   information de contact (adresse, téléphones, e-mail, horaires, carte) peut être masquée sans être effacée.
 
 ### Validation, notifications et pages légales
@@ -82,8 +87,8 @@ dans **Messages**.
 | Calendrier (consulter) | ✓ | ✓ |
 | Calendrier (créer/modifier) | ✓ | ✓ |
 | Calendrier (supprimer) | ✓ | — |
-| Activités et médias du site (consulter, ajouter en brouillon) | ✓ | ✓ |
-| Activités et médias du site (modifier, supprimer, publier) | ✓ | — |
+| Annonces, activités et médias du site (consulter, ajouter en brouillon) | ✓ | ✓ |
+| Annonces, activités et médias du site (modifier, supprimer, publier) | ✓ | — |
 | Messages du formulaire de contact (lire) | ✓ | ✓ |
 | Messages du formulaire de contact (supprimer) | ✓ | — |
 | Exports | ✓ | ✓ |

@@ -50,8 +50,14 @@
     <a class="nav-item {{ request()->routeIs('etablissements.*') ? 'active' : '' }}" href="{{ route('etablissements.index') }}">
       <i class="fas fa-school"></i> Établissements
     </a>
+    <a class="nav-item {{ request()->routeIs('annonces.*') ? 'active' : '' }}" href="{{ route('annonces.index') }}">
+      <i class="fas fa-bullhorn"></i> Annonces (site)
+      @if (auth()->user()->isSuperAdmin() && ($annoncesAValider = \App\Models\Annonce::where('a_valider', true)->count()) > 0)
+        <span class="nav-badge" title="À valider">{{ $annoncesAValider }}</span>
+      @endif
+    </a>
     <a class="nav-item {{ request()->routeIs('activites.*') ? 'active' : '' }}" href="{{ route('activites.index') }}">
-      <i class="fas fa-bullhorn"></i> Activités (site)
+      <i class="fas fa-calendar-check"></i> Activités (site)
       @if (auth()->user()->isSuperAdmin() && ($activitesAValider = \App\Models\Activite::where('a_valider', true)->count()) > 0)
         <span class="nav-badge" title="À valider">{{ $activitesAValider }}</span>
       @endif

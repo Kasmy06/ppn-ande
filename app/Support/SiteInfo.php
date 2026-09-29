@@ -21,6 +21,7 @@ class SiteInfo
 
     /** Pages du site public que l'équipe peut activer ou désactiver. */
     public const PAGES = [
+        'annonces' => 'Annonces',
         'a_propos' => 'À propos',
         'agenda' => 'Agenda',
         'galerie' => 'Galerie photos & vidéos',

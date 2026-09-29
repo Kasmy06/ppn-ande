@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ActiviteController;
+use App\Http\Controllers\AnnonceController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MediaController;
 use App\Http\Controllers\MessageController;
@@ -19,6 +20,7 @@ use App\Http\Controllers\VisiteurController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [SiteController::class, 'accueil'])->name('site.accueil');
+Route::get('/annonces', [SiteController::class, 'annonces'])->name('site.annonces');
 Route::get('/activites', [SiteController::class, 'activites'])->name('site.activites');
 Route::get('/galerie', [SiteController::class, 'galerie'])->name('site.galerie');
 Route::get('/agenda', [SiteController::class, 'agenda'])->name('site.agenda');
@@ -78,6 +80,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/gestion-activites/create', [ActiviteController::class, 'create'])->name('activites.create');
     Route::post('/gestion-activites', [ActiviteController::class, 'store'])->name('activites.store');
 
+    // Annonces : même principe que les activités.
+    Route::get('/gestion-annonces', [AnnonceController::class, 'index'])->name('annonces.index');
+    Route::get('/gestion-annonces/create', [AnnonceController::class, 'create'])->name('annonces.create');
+    Route::post('/gestion-annonces', [AnnonceController::class, 'store'])->name('annonces.store');
+
     // Messages du formulaire de contact : consultation par toute l'équipe, suppression réservée au Super Admin.
     Route::get('/messages', [MessageController::class, 'index'])->name('messages.index');
     Route::patch('/messages/{message}/lu', [MessageController::class, 'basculerLu'])->name('messages.lu');
@@ -88,11 +95,14 @@ Route::middleware('auth')->group(function () {
 
         Route::patch('/gestion-activites/{activite}/publication', [ActiviteController::class, 'basculerPublication'])->name('activites.publication');
         Route::patch('/gestion-medias/{media}/publication', [MediaController::class, 'basculerPublication'])->name('medias.publication');
+        Route::patch('/gestion-annonces/{annonce}/publication', [AnnonceController::class, 'basculerPublication'])->name('annonces.publication');
 
         Route::resource('gestion-activites', ActiviteController::class)
             ->only(['edit', 'update', 'destroy'])->parameters(['gestion-activites' => 'activite'])->names('activites');
         Route::resource('gestion-medias', MediaController::class)
             ->only(['edit', 'update', 'destroy'])->parameters(['gestion-medias' => 'media'])->names('medias');
+        Route::resource('gestion-annonces', AnnonceController::class)
+            ->only(['edit', 'update', 'destroy'])->parameters(['gestion-annonces' => 'annonce'])->names('annonces');
 
         Route::delete('/visiteurs/{visiteur}', [VisiteurController::class, 'destroy'])->name('visiteurs.destroy');
 

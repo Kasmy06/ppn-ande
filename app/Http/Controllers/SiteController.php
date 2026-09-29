@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Activite;
+use App\Models\Annonce;
 use App\Models\Media;
 use App\Models\MessageContact;
 use App\Support\Notifier;
@@ -18,9 +19,21 @@ class SiteController extends Controller
     public function accueil(): View
     {
         return view('site.accueil', [
+            'annonces' => SiteInfo::page('annonces')
+                ? Annonce::publie()->enCours()->orderByDesc('urgente')->orderByDesc('date_publication')->limit(3)->get()
+                : collect(),
             'prochaines' => Activite::publie()->aVenir()->orderBy('date_debut')->limit(3)->get(),
             'recentes' => Activite::publie()->orderByDesc('date_debut')->limit(3)->get(),
             'medias' => SiteInfo::page('galerie') ? Media::publie()->latest()->limit(6)->get() : collect(),
+        ]);
+    }
+
+    public function annonces(): View
+    {
+        abort_unless(SiteInfo::page('annonces'), 404);
+
+        return view('site.annonces', [
+            'annonces' => Annonce::publie()->enCours()->orderByDesc('urgente')->orderByDesc('date_publication')->paginate(10),
         ]);
     }
 
@@ -140,7 +153,7 @@ class SiteController extends Controller
     public function sitemap(): Response
     {
         $urls = [['loc' => route('site.accueil')], ['loc' => route('site.activites')]];
-        foreach (['a_propos' => 'site.a-propos', 'agenda' => 'site.agenda', 'galerie' => 'site.galerie', 'contact' => 'site.contact',
+        foreach (['annonces' => 'site.annonces', 'a_propos' => 'site.a-propos', 'agenda' => 'site.agenda', 'galerie' => 'site.galerie', 'contact' => 'site.contact',
                   'mentions' => 'site.mentions', 'confidentialite' => 'site.confidentialite'] as $page => $route) {
             if (SiteInfo::page($page)) {
                 $urls[] = ['loc' => route($route)];
