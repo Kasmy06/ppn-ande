@@ -314,9 +314,10 @@
             resultatsBox.style.display = 'block';
             return;
           }
+          const echapper = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
           resultatsBox.innerHTML = data.map((v, i) => `
             <div class="resultat-item" data-index="${i}" style="padding:0.65rem 1rem;cursor:pointer;border-bottom:1px solid var(--border);font-size:0.85rem;">
-              <strong>${v.prenom} ${v.nom}</strong> — ${v.type}${v.etablissement_nom ? ' · ' + v.etablissement_nom : ''}
+              <strong>${echapper(v.prenom)} ${echapper(v.nom)}</strong> — ${echapper(v.type)}${v.etablissement_nom ? ' · ' + echapper(v.etablissement_nom) : ''}
               <div style="font-size:0.72rem;color:var(--muted);">déjà venu(e) ${v.nb_visites}x, dernière visite le ${new Date(v.derniere_visite).toLocaleDateString('fr-FR')}</div>
             </div>
           `).join('');

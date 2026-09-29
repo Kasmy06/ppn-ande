@@ -128,7 +128,15 @@
     if (data.image) { img.src = data.image; img.alt = data.titre; imgWrap.hidden = false; }
     else { img.src = ''; imgWrap.hidden = true; }
     dateEl.textContent = data.date;
-    titreEl.innerHTML = (data.urgente ? '<span class="am-flag">Urgent</span> ' : '') + data.titre;
+    titreEl.textContent = '';
+    if (data.urgente) {
+      var flag = document.createElement('span');
+      flag.className = 'am-flag';
+      flag.textContent = 'Urgent';
+      titreEl.appendChild(flag);
+      titreEl.appendChild(document.createTextNode(' '));
+    }
+    titreEl.appendChild(document.createTextNode(data.titre));
     contenuEl.textContent = data.contenu;
     modal.hidden = false;
     document.body.style.overflow = 'hidden';

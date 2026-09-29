@@ -53,7 +53,17 @@
     });
     var carte = items[actif].querySelector('.cf-card');
     if (infoDate) infoDate.textContent = carte.dataset.date;
-    if (infoTitre) infoTitre.innerHTML = (carte.dataset.urgente === '1' ? '<span class="cf-info-flag">Urgent</span> ' : '') + carte.dataset.titre;
+    if (infoTitre) {
+      infoTitre.textContent = '';
+      if (carte.dataset.urgente === '1') {
+        var flag = document.createElement('span');
+        flag.className = 'cf-info-flag';
+        flag.textContent = 'Urgent';
+        infoTitre.appendChild(flag);
+        infoTitre.appendChild(document.createTextNode(' '));
+      }
+      infoTitre.appendChild(document.createTextNode(carte.dataset.titre));
+    }
   }
 
   function ouvrirActif() {

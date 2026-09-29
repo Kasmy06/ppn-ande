@@ -129,4 +129,15 @@ class AnnonceTest extends TestCase
         $this->get('/')->assertSee('data-contenu="'.e($texteLong).'"', false)
             ->assertSee('data-image="'.Storage::disk('public')->url('annonces/photo.jpg').'"', false);
     }
+
+    public function test_malicious_title_is_escaped_everywhere_it_is_rendered(): void
+    {
+        $piege = '<script>alert(1)</script>';
+        Annonce::create(['titre' => $piege, 'contenu' => 'x', 'date_publication' => '2026-01-01', 'publie' => true]);
+
+        // Ni la grille /annonces, ni le carrousel de l'accueil, ne doivent jamais renvoyer le script tel quel :
+        // le titre doit toujours être échappé (que ce soit dans le texte visible ou dans data-titre).
+        $this->get('/annonces')->assertDontSee($piege, false);
+        $this->get('/')->assertDontSee($piege, false);
+    }
 }
