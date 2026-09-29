@@ -192,25 +192,25 @@ img { max-width: 100%; display: block; }
 .annonce-body p { color: var(--text); font-size: .88rem; white-space: pre-line; }
 
 /* Carrousel « coverflow » des annonces (accueil) : carte centrale bien en face, les autres inclinées en 3D. */
-.cf-wrap { position: relative; background: radial-gradient(ellipse at center, #241326 0%, #0d0710 68%, #030103 100%); border-radius: 22px; padding: 46px 60px; }
-.cf-stage { position: relative; height: 260px; perspective: 1200px; }
-.cf-item { position: absolute; top: 50%; left: 50%; width: 230px; height: 100%; margin-left: -115px; margin-top: -130px; transition: transform .5s cubic-bezier(.22,.68,.32,1), opacity .5s ease; transform-style: preserve-3d; cursor: pointer; }
+.cf-wrap { position: relative; max-width: 620px; margin: 0 auto; background: linear-gradient(160deg, #2a1533, #150a1c); border-radius: 18px; padding: 26px 54px; }
+.cf-stage { position: relative; height: 150px; perspective: 1000px; }
+.cf-item { position: absolute; top: 50%; left: 50%; width: 190px; height: 100%; margin-left: -95px; margin-top: -75px; transition: transform .45s cubic-bezier(.22,.68,.32,1), opacity .45s ease; transform-style: preserve-3d; cursor: pointer; }
 .cf-item.cf-actif { cursor: default; }
-.cf-card { position: relative; width: 100%; height: 100%; border-radius: 14px; overflow: hidden; box-shadow: 0 24px 50px rgba(0,0,0,.55); background: #1a0f22; }
+.cf-card { position: relative; width: 100%; height: 100%; border-radius: 10px; overflow: hidden; box-shadow: 0 12px 26px rgba(0,0,0,.4); background: #1a0f22; }
 .cf-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.cf-noimg { width: 100%; height: 100%; background: linear-gradient(135deg, var(--violet), var(--magenta)); display: grid; place-items: center; color: rgba(255,255,255,.85); font-size: 2.4rem; }
-.cf-flag { position: absolute; top: 10px; right: 10px; background: #dc2626; color: #fff; font-size: .66rem; font-weight: 700; padding: 3px 9px; border-radius: 999px; text-transform: uppercase; letter-spacing: .03em; }
-.cf-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: none; border: 0; color: rgba(255,255,255,.55); font-size: 2.6rem; line-height: 1; padding: 10px; cursor: pointer; transition: color .15s, transform .15s; z-index: 200; }
+.cf-noimg { width: 100%; height: 100%; background: linear-gradient(135deg, var(--violet), var(--magenta)); display: grid; place-items: center; color: rgba(255,255,255,.85); font-size: 1.7rem; }
+.cf-flag { position: absolute; top: 7px; right: 7px; background: #dc2626; color: #fff; font-size: .6rem; font-weight: 700; padding: 2px 8px; border-radius: 999px; text-transform: uppercase; letter-spacing: .03em; }
+.cf-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: none; border: 0; color: rgba(255,255,255,.5); font-size: 1.9rem; line-height: 1; padding: 8px; cursor: pointer; transition: color .15s; z-index: 200; }
 .cf-arrow:hover { color: #fff; }
-.cf-prev { left: 4px; }
-.cf-next { right: 4px; }
-.cf-info { text-align: center; margin-top: 18px; }
-.cf-info-date { font-size: .76rem; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
-.cf-info-title { font-size: 1.15rem; color: var(--violet); margin-top: 3px; }
-.cf-info-flag { background: #dc2626; color: #fff; font-size: .68rem; font-weight: 700; padding: 3px 9px; border-radius: 999px; text-transform: uppercase; letter-spacing: .03em; vertical-align: middle; }
+.cf-prev { left: 6px; }
+.cf-next { right: 6px; }
+.cf-info { text-align: center; margin-top: 14px; }
+.cf-info-date { font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+.cf-info-title { font-size: 1.02rem; color: var(--violet); margin-top: 2px; }
+.cf-info-flag { background: #dc2626; color: #fff; font-size: .64rem; font-weight: 700; padding: 2px 8px; border-radius: 999px; text-transform: uppercase; letter-spacing: .03em; vertical-align: middle; }
 @media (max-width: 640px) {
-  .cf-wrap { padding: 34px 44px; }
-  .cf-stage { height: 210px; }
-  .cf-item { width: 180px; margin-left: -90px; margin-top: -105px; }
-  .cf-arrow { font-size: 2rem; }
+  .cf-wrap { max-width: 100%; padding: 20px 40px; }
+  .cf-stage { height: 120px; }
+  .cf-item { width: 150px; margin-left: -75px; margin-top: -60px; }
+  .cf-arrow { font-size: 1.6rem; }
 }

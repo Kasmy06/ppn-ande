@@ -41,8 +41,8 @@
       if (ecart < -total / 2) ecart += total;
       var abs = Math.abs(ecart);
       var visible = abs <= 2;
-      var tx = ecart * 145;
-      var rot = ecart === 0 ? 0 : (ecart > 0 ? -42 : 42);
+      var tx = ecart * 105;
+      var rot = ecart === 0 ? 0 : (ecart > 0 ? -35 : 35);
       var echelle = abs === 0 ? 1 : (abs === 1 ? 0.8 : 0.62);
       var opacite = abs === 0 ? 1 : (abs === 1 ? 0.75 : (abs === 2 ? 0.35 : 0));
       item.style.transform = 'translateX(' + tx + 'px) rotateY(' + rot + 'deg) scale(' + echelle + ')';
