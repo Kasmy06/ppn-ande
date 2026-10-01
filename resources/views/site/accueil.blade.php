@@ -89,8 +89,8 @@
   if (info) info.addEventListener('click', ouvrirActif);
 
   var prev = document.querySelector('.cf-prev'), next = document.querySelector('.cf-next');
-  if (prev) prev.addEventListener('click', function () { actif = (actif - 1 + total) % total; placer(); });
-  if (next) next.addEventListener('click', function () { actif = (actif + 1) % total; placer(); });
+  if (prev) prev.addEventListener('click', function () { actif = (actif - 1 + total) % total; placer(); relancerAuto(); });
+  if (next) next.addEventListener('click', function () { actif = (actif + 1) % total; placer(); relancerAuto(); });
 
   // Glissement au doigt sur mobile.
   var depart = null;
@@ -98,12 +98,38 @@
   stage.addEventListener('touchend', function (e) {
     if (depart === null) return;
     var delta = e.changedTouches[0].clientX - depart;
-    if (delta > 40) { actif = (actif - 1 + total) % total; placer(); }
-    else if (delta < -40) { actif = (actif + 1) % total; placer(); }
+    if (delta > 40) { actif = (actif - 1 + total) % total; placer(); relancerAuto(); }
+    else if (delta < -40) { actif = (actif + 1) % total; placer(); relancerAuto(); }
     depart = null;
   });
 
+  // Défilement automatique : passe à l'annonce suivante toutes les 6 secondes.
+  var DELAI_AUTO = 6000;
+  var minuteur = null;
+  var reduireAnimations = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var cfWrap = stage.closest('.cf-wrap');
+
+  function demarrerAuto() {
+    if (minuteur || total <= 1 || reduireAnimations || document.hidden) return;
+    minuteur = setInterval(function () { actif = (actif + 1) % total; placer(); }, DELAI_AUTO);
+  }
+  function arreterAuto() {
+    clearInterval(minuteur);
+    minuteur = null;
+  }
+  function relancerAuto() { arreterAuto(); demarrerAuto(); }
+
+  // Pause le temps de lire quand la souris est sur le carrousel, ou quand l'annonce est ouverte en détail.
+  if (cfWrap) {
+    cfWrap.addEventListener('mouseenter', arreterAuto);
+    cfWrap.addEventListener('mouseleave', demarrerAuto);
+  }
+  // Après un clic manuel sur une carte latérale, on relance le minuteur à partir de ce nouveau point.
+  items.forEach(function (item) { item.addEventListener('click', relancerAuto); });
+  document.addEventListener('visibilitychange', function () { if (document.hidden) arreterAuto(); else demarrerAuto(); });
+
   placer();
+  demarrerAuto();
 })();
 </script>
 @endif
