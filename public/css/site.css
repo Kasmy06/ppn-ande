@@ -236,4 +236,11 @@ img { max-width: 100%; display: block; }
   main { padding-top: 0; }
   .detail { grid-template-columns: 1fr; }
   a[href]::after { content: none !important; }
+
+  /* Imprimer uniquement le détail d'une annonce ouverte (bouton "Imprimer cette annonce"). */
+  body.imprimer-annonce main,
+  body.imprimer-annonce .lightbox { display: none !important; }
+  body.imprimer-annonce .am-overlay { display: block !important; position: static; background: none; padding: 0; }
+  body.imprimer-annonce .am-box { box-shadow: none; max-height: none; overflow: visible; width: 100%; }
+  body.imprimer-annonce .am-img-wrap { height: auto; max-height: 340px; }
 }

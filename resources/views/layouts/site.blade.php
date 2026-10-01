@@ -22,6 +22,9 @@
   @if ($imagePartage)<meta property="og:image" content="{{ $imagePartage }}"/>@endif
   <meta name="twitter:card" content="summary_large_image"/>
   <link rel="icon" href="{{ $logoUrl ?? asset('favicon.ico') }}"/>
+  @if (SiteInfo::page('annonces'))
+    <link rel="alternate" type="application/rss+xml" title="Annonces — {{ $nomStructure }}" href="{{ route('site.annonces.rss') }}"/>
+  @endif
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
@@ -114,6 +117,7 @@
       <div class="am-date" id="amDate"></div>
       <h3 id="amTitre"></h3>
       <p id="amContenu"></p>
+      <button type="button" class="btn btn-outline no-print" id="amPrint" style="margin-top:14px"><i class="fas fa-print"></i> Imprimer cette annonce</button>
     </div>
   </div>
 </div>
@@ -143,6 +147,15 @@
   };
 
   function fermer() { modal.hidden = true; document.body.style.overflow = ''; }
+
+  var boutonImprimer = document.getElementById('amPrint');
+  if (boutonImprimer) {
+    boutonImprimer.addEventListener('click', function () {
+      document.body.classList.add('imprimer-annonce');
+      window.print();
+    });
+  }
+  window.addEventListener('afterprint', function () { document.body.classList.remove('imprimer-annonce'); });
 
   // Ouverture générique pour toute carte marquée .annonce-trigger (grille de la page Annonces).
   document.addEventListener('click', function (e) {

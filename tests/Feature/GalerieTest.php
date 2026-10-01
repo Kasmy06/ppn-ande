@@ -30,6 +30,11 @@ class GalerieTest extends TestCase
         $this->get('/galerie?q=introuvable')->assertSee('Aucun contenu ne correspond');
     }
 
+    public function test_gallery_page_has_a_print_button(): void
+    {
+        $this->get('/galerie')->assertOk()->assertSee('window.print()', false);
+    }
+
     public function test_youtube_links_become_embed_urls(): void
     {
         $m = new Media(['type' => 'video', 'video_url' => 'https://www.youtube.com/watch?v=dQw4w9WgXcQ']);

@@ -150,4 +150,38 @@ class AnnonceTest extends TestCase
         $this->get('/annonces?q=bureautique')->assertSee('Inscriptions ouvertes')->assertDontSee('Fermeture exceptionnelle');
         $this->get('/annonces?q=introuvable')->assertSee('Aucune annonce ne correspond');
     }
+
+    public function test_rss_feed_lists_only_published_current_announcements(): void
+    {
+        $visible = Annonce::create(['titre' => 'Fermeture exceptionnelle', 'contenu' => 'Détails de la fermeture.', 'date_publication' => '2026-01-01', 'publie' => true]);
+        Annonce::create(['titre' => 'Brouillon caché', 'contenu' => 'x', 'date_publication' => '2026-01-01', 'publie' => false]);
+        Annonce::create(['titre' => 'Expirée', 'contenu' => 'x', 'date_publication' => '2026-01-01', 'date_expiration' => '2026-01-02', 'publie' => true]);
+
+        $this->travelTo('2026-06-01');
+
+        $reponse = $this->get('/annonces/flux.xml')->assertOk();
+        $this->assertStringContainsString('application/rss+xml', $reponse->headers->get('Content-Type'));
+        $reponse->assertSee('<rss version="2.0">', false)
+            ->assertSee('Fermeture exceptionnelle')->assertSee('Détails de la fermeture.')
+            ->assertDontSee('Brouillon caché')->assertDontSee('Expirée');
+        $reponse->assertSee('annonce-'.$visible->id, false);
+    }
+
+    public function test_rss_feed_respects_the_annonces_page_toggle(): void
+    {
+        $this->get('/annonces/flux.xml')->assertOk();
+        $this->get('/')->assertSee(route('site.annonces.rss'), false);
+
+        $this->actingAs(User::factory()->superAdmin()->create());
+        $this->put('/parametres/application', ['nom_structure' => 'PPN', 'capacite_journaliere' => 60, 'visible_page_annonces' => 0]);
+
+        $this->get('/annonces/flux.xml')->assertNotFound();
+    }
+
+    public function test_announcements_page_has_print_and_rss_buttons(): void
+    {
+        $this->get('/annonces')->assertOk()
+            ->assertSee(route('site.annonces.rss'), false)
+            ->assertSee('window.print()', false);
+    }
 }

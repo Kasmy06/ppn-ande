@@ -45,6 +45,16 @@ class SiteController extends Controller
         return view('site.annonces', compact('annonces', 'q'));
     }
 
+    public function annoncesRss(): Response
+    {
+        abort_unless(SiteInfo::page('annonces'), 404);
+
+        $annonces = Annonce::publie()->enCours()->orderByDesc('date_publication')->limit(30)->get();
+
+        return response()->view('site.annonces-rss', ['annonces' => $annonces, 'nom' => SiteInfo::nom()])
+            ->header('Content-Type', 'application/rss+xml; charset=UTF-8');
+    }
+
     public function activites(Request $request): View
     {
         $categorie = $request->query('categorie');

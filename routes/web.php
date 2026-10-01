@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [SiteController::class, 'accueil'])->name('site.accueil');
 Route::get('/annonces', [SiteController::class, 'annonces'])->name('site.annonces');
+Route::get('/annonces/flux.xml', [SiteController::class, 'annoncesRss'])->name('site.annonces.rss');
 Route::get('/activites', [SiteController::class, 'activites'])->name('site.activites');
 Route::get('/galerie', [SiteController::class, 'galerie'])->name('site.galerie');
 Route::get('/agenda', [SiteController::class, 'agenda'])->name('site.agenda');

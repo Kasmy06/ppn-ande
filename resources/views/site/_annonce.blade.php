@@ -1,5 +1,5 @@
 @php $imageUrl = $a->image_path ? \Illuminate\Support\Facades\Storage::disk('public')->url($a->image_path) : null; @endphp
-<article class="annonce annonce-trigger {{ $a->urgente ? 'urgente' : '' }}"
+<article id="annonce-{{ $a->id }}" class="annonce annonce-trigger {{ $a->urgente ? 'urgente' : '' }}"
   data-image="{{ $imageUrl }}" data-date="{{ $a->date_publication->translatedFormat('j F Y') }}"
   data-titre="{{ $a->titre }}" data-contenu="{{ $a->contenu }}" data-urgente="{{ $a->urgente ? '1' : '0' }}">
   @if ($a->urgente)<span class="annonce-flag"><i class="fas fa-triangle-exclamation"></i> Urgent</span>@endif
