@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="{{ asset('rss.xsl') }}"?>
+<?xml-stylesheet type="text/xsl" href="{{ route('site.annonces.rss.xsl') }}"?>
 <rss version="2.0">
   <channel>
     <title>Annonces — {{ $nom }}</title>

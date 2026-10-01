@@ -55,6 +55,15 @@ class SiteController extends Controller
             ->header('Content-Type', 'application/rss+xml; charset=UTF-8');
     }
 
+    /**
+     * Mise en forme du flux RSS, servie par Laravel (et non en fichier statique) pour que le type
+     * « text/xsl » soit toujours correct, y compris avec `php artisan serve` qui ignore .htaccess.
+     */
+    public function rssXsl(): Response
+    {
+        return response()->view('site.rss')->header('Content-Type', 'text/xsl; charset=UTF-8');
+    }
+
     public function activites(Request $request): View
     {
         $categorie = $request->query('categorie');
