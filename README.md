@@ -59,9 +59,8 @@ valeur automatiquement dès qu'il figure dans la liste des villes rurales.
 - Les **annonces**, **activités** et **médias** sont créés en **brouillon** : rien n'est visible du public tant que le Super Admin ne clique pas sur
   « Publier » (liste des annonces / des activités / des médias). Les ajouts d'un agent restent en brouillon jusqu'à validation ; l'agent peut consulter et ajouter, mais
   seul le Super Admin peut modifier, supprimer et publier.
-- Un **compteur de visites anonyme** est affiché en bas du site (total et du jour), activable dans « Ce que le public peut voir ».
-  Il ne conserve ni adresse IP ni identifiant : seul un total par jour est enregistré, et une session n'est comptée qu'une fois par jour.
-  Les robots et les rechargements d'une même session peuvent gonfler un peu le chiffre. La politique de confidentialité le mentionne.
+- Le pied de page affiche le **nombre de personnes accueillies au PPN** (visites, personnes différentes, aujourd'hui), calculé à partir
+  du registre des visiteurs. Seuls des totaux sont affichés, jamais de noms. Activable dans « Ce que le public peut voir ».
 - Dans **Paramètres > Application > « Ce que le public peut voir »**, chaque page (Annonces, À propos, Agenda, Galerie, Contact) et chaque
   information de contact (adresse, téléphones, e-mail, horaires, carte) peut être masquée sans être effacée.
 

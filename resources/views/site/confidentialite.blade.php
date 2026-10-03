@@ -27,9 +27,7 @@
       <h2>2. Quelles données collectons-nous ?</h2>
       <p>Le site public ne collecte des données personnelles que si vous nous écrivez par le <strong>formulaire de contact</strong> :
         votre nom, votre adresse e-mail, votre numéro de téléphone (facultatif), le sujet et le contenu de votre message.
-        Aucune autre donnée personnelle n'est demandée aux visiteurs du site, et il n'y a ni publicité ni outil de suivi individuel.
-        Le site affiche un <strong>compteur de visites anonyme</strong> : il additionne le nombre de visites par jour, sans jamais
-        enregistrer d'adresse IP ni d'identifiant de visiteur. Une même session n'est comptée qu'une fois par jour.</p>
+        Aucune autre donnée personnelle n'est demandée aux visiteurs du site, et il n'y a ni publicité ni outil de suivi d'audience.</p>
 
       <h2>3. Pourquoi et sur quelle base ?</h2>
       <p>Ces données servent uniquement à <strong>répondre à votre demande</strong>. Elles sont traitées avec votre consentement,
@@ -41,7 +39,6 @@
 
       <h2>5. Cookies et services externes</h2>
       <p>Le site n'utilise qu'un cookie technique indispensable à son fonctionnement et à sa sécurité (session), qui ne sert pas à vous suivre :
-        il permet aussi de ne compter qu'une fois par jour une même visite, sans rien conserver de plus.
         Pour s'afficher, les pages chargent des polices de caractères (Google Fonts) et des icônes (cdnjs) depuis des serveurs tiers, qui peuvent
         recevoir votre adresse IP. Si une carte Google Maps ou une vidéo YouTube/Vimeo est affichée, ces services appliquent leurs propres règles.</p>
 

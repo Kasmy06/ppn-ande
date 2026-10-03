@@ -80,7 +80,7 @@
     </div>
   </div>
   @if (SiteInfo::compteurVisible())
-    <div class="copy" style="padding-top:0">{{ number_format(SiteInfo::visitesTotal(), 0, ',', ' ') }} visites depuis la mise en ligne · {{ number_format(SiteInfo::visitesAujourdhui(), 0, ',', ' ') }} aujourd'hui</div>
+    <div class="copy" style="padding-top:0">{{ number_format(SiteInfo::visitesPhysiquesTotal(), 0, ',', ' ') }} visites au PPN · {{ number_format(SiteInfo::personnesDifferentes(), 0, ',', ' ') }} personnes différentes · {{ number_format(SiteInfo::visitesPhysiquesAujourdhui(), 0, ',', ' ') }} aujourd'hui</div>
   @endif
   <div class="copy">© {{ date('Y') }} {{ $nomStructure }}@if (SiteInfo::page('mentions')) · <a href="{{ route('site.mentions') }}">Mentions légales</a>@endif @if (SiteInfo::page('confidentialite')) · <a href="{{ route('site.confidentialite') }}">Confidentialité</a>@endif</div>
 </footer>

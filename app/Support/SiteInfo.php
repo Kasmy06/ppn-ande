@@ -17,7 +17,7 @@ class SiteInfo
         'email' => 'Adresse e-mail',
         'horaires' => 'Horaires d\'ouverture',
         'carte' => 'Carte',
-        'compteur' => 'Compteur de visites',
+        'compteur' => 'Compteur des visiteurs du PPN',
     ];
 
     /** Pages du site public que l'équipe peut activer ou désactiver. */
@@ -73,20 +73,25 @@ class SiteInfo
         return self::visible('horaires') ? (ParametreApplication::get('horaires') ?: null) : null;
     }
 
-    /** Compteur anonyme de visites du site public (voir CompterVisite), affiché si l'équipe le souhaite. */
+    /** Compteur des personnes accueillies physiquement au PPN (registre des visiteurs, données agrégées). */
     public static function compteurVisible(): bool
     {
         return self::visible('compteur');
     }
 
-    public static function visitesTotal(): int
+    public static function visitesPhysiquesTotal(): int
     {
-        return (int) \Illuminate\Support\Facades\DB::table('visites_journalieres')->sum('nombre');
+        return \App\Models\Visiteur::count();
     }
 
-    public static function visitesAujourdhui(): int
+    public static function personnesDifferentes(): int
     {
-        return (int) \Illuminate\Support\Facades\DB::table('visites_journalieres')->where('jour', today()->toDateString())->value('nombre');
+        return \App\Models\Visiteur::selectRaw('LOWER(prenom) AS p, LOWER(nom) AS n')->distinct()->get()->count();
+    }
+
+    public static function visitesPhysiquesAujourdhui(): int
+    {
+        return \App\Models\Visiteur::whereDate('date_visite', today())->count();
     }
 
     public static function nom(): string
