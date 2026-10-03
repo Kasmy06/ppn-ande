@@ -17,6 +17,7 @@ class SiteInfo
         'email' => 'Adresse e-mail',
         'horaires' => 'Horaires d\'ouverture',
         'carte' => 'Carte',
+        'compteur' => 'Compteur de visites',
     ];
 
     /** Pages du site public que l'équipe peut activer ou désactiver. */
@@ -70,6 +71,22 @@ class SiteInfo
     public static function horaires(): ?string
     {
         return self::visible('horaires') ? (ParametreApplication::get('horaires') ?: null) : null;
+    }
+
+    /** Compteur anonyme de visites du site public (voir CompterVisite), affiché si l'équipe le souhaite. */
+    public static function compteurVisible(): bool
+    {
+        return self::visible('compteur');
+    }
+
+    public static function visitesTotal(): int
+    {
+        return (int) \Illuminate\Support\Facades\DB::table('visites_journalieres')->sum('nombre');
+    }
+
+    public static function visitesAujourdhui(): int
+    {
+        return (int) \Illuminate\Support\Facades\DB::table('visites_journalieres')->where('jour', today()->toDateString())->value('nombre');
     }
 
     public static function nom(): string

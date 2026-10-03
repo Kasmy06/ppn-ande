@@ -79,6 +79,9 @@
       <p>@if (SiteInfo::page('annonces'))<a href="{{ route('site.annonces') }}">Annonces</a> · @endif<a href="{{ route('site.activites') }}">Activités</a>@if (SiteInfo::page('agenda')) · <a href="{{ route('site.agenda') }}">Agenda</a>@endif<br>@if (SiteInfo::page('galerie'))<a href="{{ route('site.galerie') }}">Galerie</a>@endif @if (SiteInfo::page('a_propos')) · <a href="{{ route('site.a-propos') }}">À propos</a>@endif<br><a href="{{ route('login') }}">Espace équipe</a></p>
     </div>
   </div>
+  @if (SiteInfo::compteurVisible())
+    <div class="copy" style="padding-top:0">{{ number_format(SiteInfo::visitesTotal(), 0, ',', ' ') }} visites depuis la mise en ligne · {{ number_format(SiteInfo::visitesAujourdhui(), 0, ',', ' ') }} aujourd'hui</div>
+  @endif
   <div class="copy">© {{ date('Y') }} {{ $nomStructure }}@if (SiteInfo::page('mentions')) · <a href="{{ route('site.mentions') }}">Mentions légales</a>@endif @if (SiteInfo::page('confidentialite')) · <a href="{{ route('site.confidentialite') }}">Confidentialité</a>@endif</div>
 </footer>
 <div class="lightbox" id="lightbox" hidden>

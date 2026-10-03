@@ -17,21 +17,24 @@ use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\StatistiqueController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VisiteurController;
+use App\Http\Middleware\CompterVisite;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [SiteController::class, 'accueil'])->name('site.accueil');
-Route::get('/annonces', [SiteController::class, 'annonces'])->name('site.annonces');
-Route::get('/activites', [SiteController::class, 'activites'])->name('site.activites');
-Route::get('/galerie', [SiteController::class, 'galerie'])->name('site.galerie');
-Route::get('/agenda', [SiteController::class, 'agenda'])->name('site.agenda');
-Route::get('/a-propos', [SiteController::class, 'aPropos'])->name('site.a-propos');
-Route::get('/mentions-legales', [SiteController::class, 'mentions'])->name('site.mentions');
-Route::get('/confidentialite', [SiteController::class, 'confidentialite'])->name('site.confidentialite');
-Route::get('/sitemap.xml', [SiteController::class, 'sitemap'])->name('site.sitemap');
-Route::get('/robots.txt', [SiteController::class, 'robots'])->name('site.robots');
-Route::get('/contact', [SiteController::class, 'contact'])->name('site.contact');
-Route::post('/contact', [SiteController::class, 'envoyerContact'])->middleware('throttle:5,10')->name('site.contact.envoyer');
-Route::get('/activites/{activite}', [SiteController::class, 'activite'])->whereNumber('activite')->name('site.activite');
+Route::middleware(CompterVisite::class)->group(function () {
+    Route::get('/', [SiteController::class, 'accueil'])->name('site.accueil');
+    Route::get('/annonces', [SiteController::class, 'annonces'])->name('site.annonces');
+    Route::get('/activites', [SiteController::class, 'activites'])->name('site.activites');
+    Route::get('/galerie', [SiteController::class, 'galerie'])->name('site.galerie');
+    Route::get('/agenda', [SiteController::class, 'agenda'])->name('site.agenda');
+    Route::get('/a-propos', [SiteController::class, 'aPropos'])->name('site.a-propos');
+    Route::get('/mentions-legales', [SiteController::class, 'mentions'])->name('site.mentions');
+    Route::get('/confidentialite', [SiteController::class, 'confidentialite'])->name('site.confidentialite');
+    Route::get('/sitemap.xml', [SiteController::class, 'sitemap'])->name('site.sitemap');
+    Route::get('/robots.txt', [SiteController::class, 'robots'])->name('site.robots');
+    Route::get('/contact', [SiteController::class, 'contact'])->name('site.contact');
+    Route::post('/contact', [SiteController::class, 'envoyerContact'])->middleware('throttle:5,10')->name('site.contact.envoyer');
+    Route::get('/activites/{activite}', [SiteController::class, 'activite'])->whereNumber('activite')->name('site.activite');
+});
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
