@@ -26,19 +26,21 @@ class CompteurVisiteursTest extends TestCase
         $this->visiteur('Yao', 'Traoré', '2026-02-01');
 
         $this->get('/')->assertOk()
-            ->assertSee('3 visites au PPN', false)
-            ->assertSee('2 personnes différentes', false)
-            ->assertSee('1 aujourd', false);
+            ->assertSee('data-valeur="3"', false)
+            ->assertSee('visites enregistrées', false)
+            ->assertSee('data-valeur="2"', false)
+            ->assertSee('personnes différentes accueillies', false)
+            ->assertSee('data-valeur="1"', false);
     }
 
     public function test_counter_can_be_hidden_by_the_team(): void
     {
         $this->visiteur('Awa', 'Koné');
-        $this->get('/')->assertSee('visites au PPN', false);
+        $this->get('/')->assertSee('visites enregistrées', false);
 
         $this->actingAs(User::factory()->superAdmin()->create());
         $this->put('/parametres/application', ['nom_structure' => 'PPN', 'capacite_journaliere' => 60, 'visible_compteur' => 0]);
 
-        $this->get('/')->assertDontSee('visites au PPN', false);
+        $this->get('/')->assertDontSee('visites enregistrées', false);
     }
 }

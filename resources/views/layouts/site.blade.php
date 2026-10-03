@@ -57,6 +57,28 @@
 
 <main>@yield('content')</main>
 
+@if (SiteInfo::compteurVisible())
+<section class="stats-band" aria-label="Chiffres du PPN">
+  <div class="wrap stats-grid">
+    <div class="stat-tile">
+      <div class="stat-icon"><i class="fas fa-door-open"></i></div>
+      <div class="stat-num" data-valeur="{{ SiteInfo::visitesPhysiquesTotal() }}">{{ number_format(SiteInfo::visitesPhysiquesTotal(), 0, ',', ' ') }}</div>
+      <div class="stat-label">visites enregistrées</div>
+    </div>
+    <div class="stat-tile">
+      <div class="stat-icon"><i class="fas fa-user-group"></i></div>
+      <div class="stat-num" data-valeur="{{ SiteInfo::personnesDifferentes() }}">{{ number_format(SiteInfo::personnesDifferentes(), 0, ',', ' ') }}</div>
+      <div class="stat-label">personnes différentes accueillies</div>
+    </div>
+    <div class="stat-tile">
+      <div class="stat-icon"><i class="fas fa-calendar-day"></i></div>
+      <div class="stat-num" data-valeur="{{ SiteInfo::visitesPhysiquesAujourdhui() }}">{{ number_format(SiteInfo::visitesPhysiquesAujourdhui(), 0, ',', ' ') }}</div>
+      <div class="stat-label">aujourd'hui</div>
+    </div>
+  </div>
+</section>
+@endif
+
 <footer class="site-footer" id="contact">
   <div class="wrap footer-in">
     <div>
@@ -79,9 +101,6 @@
       <p>@if (SiteInfo::page('annonces'))<a href="{{ route('site.annonces') }}">Annonces</a> · @endif<a href="{{ route('site.activites') }}">Activités</a>@if (SiteInfo::page('agenda')) · <a href="{{ route('site.agenda') }}">Agenda</a>@endif<br>@if (SiteInfo::page('galerie'))<a href="{{ route('site.galerie') }}">Galerie</a>@endif @if (SiteInfo::page('a_propos')) · <a href="{{ route('site.a-propos') }}">À propos</a>@endif<br><a href="{{ route('login') }}">Espace équipe</a></p>
     </div>
   </div>
-  @if (SiteInfo::compteurVisible())
-    <div class="copy" style="padding-top:0">{{ number_format(SiteInfo::visitesPhysiquesTotal(), 0, ',', ' ') }} visites au PPN · {{ number_format(SiteInfo::personnesDifferentes(), 0, ',', ' ') }} personnes différentes · {{ number_format(SiteInfo::visitesPhysiquesAujourdhui(), 0, ',', ' ') }} aujourd'hui</div>
-  @endif
   <div class="copy">© {{ date('Y') }} {{ $nomStructure }}@if (SiteInfo::page('mentions')) · <a href="{{ route('site.mentions') }}">Mentions légales</a>@endif @if (SiteInfo::page('confidentialite')) · <a href="{{ route('site.confidentialite') }}">Confidentialité</a>@endif</div>
 </footer>
 <div class="lightbox" id="lightbox" hidden>
@@ -173,6 +192,22 @@
     }
   });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && ! modal.hidden) fermer(); });
+})();
+</script>
+<script>
+(function () {
+  var nums = document.querySelectorAll('.stat-num[data-valeur]');
+  if (!nums.length || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
+  nums.forEach(function (el) {
+    var cible = parseInt(el.dataset.valeur, 10) || 0, debut = null, duree = 1200;
+    function pas(t) {
+      if (!debut) debut = t;
+      var p = Math.min((t - debut) / duree, 1);
+      el.textContent = Math.round(cible * (1 - Math.pow(1 - p, 3))).toLocaleString('fr-FR');
+      if (p < 1) requestAnimationFrame(pas);
+    }
+    requestAnimationFrame(pas);
+  });
 })();
 </script>
 </body>

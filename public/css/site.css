@@ -244,3 +244,12 @@ img { max-width: 100%; display: block; }
   body.imprimer-annonce .am-box { box-shadow: none; max-height: none; overflow: visible; width: 100%; }
   body.imprimer-annonce .am-img-wrap { height: auto; max-height: 340px; }
 }
+
+/* Chiffres du PPN (bandeau au-dessus du pied de page) */
+.stats-band { background: linear-gradient(135deg, #f6ecf8 0%, #fdfbfe 100%); padding: 56px 0 24px; border-top: 1px solid var(--border); }
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 18px; }
+.stat-tile { position: relative; background: #fff; border: 1px solid var(--border); border-radius: 18px; padding: 26px 22px; text-align: center; overflow: hidden; box-shadow: 0 10px 30px rgba(59,11,77,.06); }
+.stat-tile::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 4px; background: linear-gradient(90deg, var(--magenta), var(--green)); }
+.stat-icon { width: 52px; height: 52px; margin: 0 auto 12px; border-radius: 16px; background: var(--pale); color: var(--magenta); display: grid; place-items: center; font-size: 1.25rem; }
+.stat-num { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 2.4rem; color: var(--violet); line-height: 1; font-variant-numeric: tabular-nums; }
+.stat-label { margin-top: 8px; color: var(--muted); font-size: .9rem; }
