@@ -45,6 +45,14 @@ class SiteController extends Controller
         return view('site.annonces', compact('annonces', 'q'));
     }
 
+    /** Page HTML d'explication de l'abonnement (lisible dans tous les navigateurs, sans XSLT). */
+    public function annoncesAbonnement(): View
+    {
+        abort_unless(SiteInfo::page('annonces'), 404);
+
+        return view('site.annonces-abonnement', ['fluxUrl' => route('site.annonces.rss')]);
+    }
+
     public function annoncesRss(): Response
     {
         abort_unless(SiteInfo::page('annonces'), 404);

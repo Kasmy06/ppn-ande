@@ -9,7 +9,7 @@
     <h1>Annonces</h1>
     <p>Les dernières informations du PPN.</p>
     <div class="no-print" style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
-      <a class="btn btn-ghost" href="{{ route('site.annonces.rss') }}"><i class="fas fa-rss"></i> S'abonner (RSS)</a>
+      <a class="btn btn-ghost" href="{{ route('site.annonces.abonnement') }}"><i class="fas fa-rss"></i> S'abonner (RSS)</a>
       <button type="button" class="btn btn-ghost" onclick="window.print()"><i class="fas fa-print"></i> Imprimer</button>
     </div>
   </div>

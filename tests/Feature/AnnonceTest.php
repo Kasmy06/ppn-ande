@@ -181,7 +181,18 @@ class AnnonceTest extends TestCase
     public function test_announcements_page_has_print_and_rss_buttons(): void
     {
         $this->get('/annonces')->assertOk()
-            ->assertSee(route('site.annonces.rss'), false)
+            ->assertSee(route('site.annonces.abonnement'), false)
             ->assertSee('window.print()', false);
+    }
+
+    public function test_subscription_page_shows_the_feed_address(): void
+    {
+        $this->get('/annonces/abonnement')->assertOk()
+            ->assertSee(route('site.annonces.rss'), false)
+            ->assertSee('Copier');
+
+        $this->actingAs(User::factory()->superAdmin()->create());
+        $this->put('/parametres/application', ['nom_structure' => 'PPN', 'capacite_journaliere' => 60, 'visible_page_annonces' => 0]);
+        $this->get('/annonces/abonnement')->assertNotFound();
     }
 }
