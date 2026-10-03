@@ -48,8 +48,7 @@ et carte se règlent dans **Paramètres > Application** ; les annonces, activit�
 **Annonces** (menu « Annonces (site) ») : pour les informations courtes et datées — fermeture exceptionnelle, nouveaux horaires,
 inscriptions ouvertes — distinctes des activités programmées. Une annonce cochée « urgente » est mise en avant en rouge, en tête
 de la page Annonces et de l'accueil (carrousel automatique, pause au survol), et une annonce peut avoir une date d'expiration
-après laquelle elle disparaît du site sans être supprimée. La page Annonces propose aussi un fil RSS (`/annonces/flux.xml`,
-découvrable automatiquement par les lecteurs de flux) pour suivre les nouvelles annonces sans revisiter le site.
+après laquelle elle disparaît du site sans être supprimée.
 
 **À propos** : la section « Le réseau des PPN de l'UVCI » (texte d'introduction, villes des zones urbaines, villes du milieu
 rural) se modifie ou se complète dans **Paramètres > Application**, comme le reste de la présentation. « Andé » est mis en

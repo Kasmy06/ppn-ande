@@ -45,33 +45,6 @@ class SiteController extends Controller
         return view('site.annonces', compact('annonces', 'q'));
     }
 
-    /** Page HTML d'explication de l'abonnement (lisible dans tous les navigateurs, sans XSLT). */
-    public function annoncesAbonnement(): View
-    {
-        abort_unless(SiteInfo::page('annonces'), 404);
-
-        return view('site.annonces-abonnement', ['fluxUrl' => route('site.annonces.rss')]);
-    }
-
-    public function annoncesRss(): Response
-    {
-        abort_unless(SiteInfo::page('annonces'), 404);
-
-        $annonces = Annonce::publie()->enCours()->orderByDesc('date_publication')->limit(30)->get();
-
-        return response()->view('site.annonces-rss', ['annonces' => $annonces, 'nom' => SiteInfo::nom()])
-            ->header('Content-Type', 'application/rss+xml; charset=UTF-8');
-    }
-
-    /**
-     * Mise en forme du flux RSS, servie par Laravel (et non en fichier statique) pour que le type
-     * « text/xsl » soit toujours correct, y compris avec `php artisan serve` qui ignore .htaccess.
-     */
-    public function rssXsl(): Response
-    {
-        return response()->view('site.rss')->header('Content-Type', 'text/xsl; charset=UTF-8');
-    }
-
     public function activites(Request $request): View
     {
         $categorie = $request->query('categorie');

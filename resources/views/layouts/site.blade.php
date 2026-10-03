@@ -22,9 +22,6 @@
   @if ($imagePartage)<meta property="og:image" content="{{ $imagePartage }}"/>@endif
   <meta name="twitter:card" content="summary_large_image"/>
   <link rel="icon" href="{{ $logoUrl ?? asset('favicon.ico') }}"/>
-  @if (SiteInfo::page('annonces'))
-    <link rel="alternate" type="application/rss+xml" title="Annonces — {{ $nomStructure }}" href="{{ route('site.annonces.rss') }}"/>
-  @endif
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
