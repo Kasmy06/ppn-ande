@@ -78,6 +78,8 @@
       <p><strong style="color:var(--text)">Abidjan et grandes villes :</strong> {{ SiteInfo::reseauVillesUrbaines() }}.</p>
       <p style="margin-top:6px"><strong style="color:var(--text)">Milieu rural :</strong> {!! $villesRurales !!}.</p>
     </div>
+
+    <p style="margin-top:20px"><a href="https://uvci.online/portail/Main/index/fr" target="_blank" rel="noopener">Découvrir l'Université Virtuelle de Côte d'Ivoire (UVCI) <i class="fas fa-arrow-up-right-from-square"></i></a></p>
   </div>
 </section>
 @endsection
