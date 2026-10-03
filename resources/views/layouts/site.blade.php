@@ -58,22 +58,25 @@
 <main>@yield('content')</main>
 
 @if (SiteInfo::compteurVisible())
-<section class="stats-band" aria-label="Chiffres du PPN">
-  <div class="wrap stats-grid">
-    <div class="stat-tile">
-      <div class="stat-icon"><i class="fas fa-door-open"></i></div>
-      <div class="stat-num" data-valeur="{{ SiteInfo::visitesPhysiquesTotal() }}">{{ number_format(SiteInfo::visitesPhysiquesTotal(), 0, ',', ' ') }}</div>
-      <div class="stat-label">visites enregistrées</div>
-    </div>
-    <div class="stat-tile">
-      <div class="stat-icon"><i class="fas fa-user-group"></i></div>
-      <div class="stat-num" data-valeur="{{ SiteInfo::personnesDifferentes() }}">{{ number_format(SiteInfo::personnesDifferentes(), 0, ',', ' ') }}</div>
-      <div class="stat-label">personnes différentes accueillies</div>
-    </div>
-    <div class="stat-tile">
-      <div class="stat-icon"><i class="fas fa-calendar-day"></i></div>
-      <div class="stat-num" data-valeur="{{ SiteInfo::visitesPhysiquesAujourdhui() }}">{{ number_format(SiteInfo::visitesPhysiquesAujourdhui(), 0, ',', ' ') }}</div>
-      <div class="stat-label">aujourd'hui</div>
+<section class="stats-band" aria-label="Registre des visites">
+  <div class="wrap">
+    <div class="stats-head"><h2>Registre des visites</h2><span>{{ now()->locale('fr')->isoFormat('dddd D MMMM YYYY') }}</span></div>
+    <div class="stats-grid">
+      <article class="stat-card total">
+        <h3>Visites enregistrées</h3>
+        <div class="stat-num" data-valeur="{{ SiteInfo::visitesPhysiquesTotal() }}">{{ number_format(SiteInfo::visitesPhysiquesTotal(), 0, ',', ' ') }}</div>
+        <p class="stat-note">Total du registre depuis l'ouverture</p>
+      </article>
+      <article class="stat-card people">
+        <h3>Personnes différentes accueillies</h3>
+        <div class="stat-num" data-valeur="{{ SiteInfo::personnesDifferentes() }}">{{ number_format(SiteInfo::personnesDifferentes(), 0, ',', ' ') }}</div>
+        <p class="stat-note">Chaque personne n'est comptée qu'une fois</p>
+      </article>
+      <article class="stat-card today">
+        <h3>Aujourd'hui</h3>
+        <div class="stat-num" data-valeur="{{ SiteInfo::visitesPhysiquesAujourdhui() }}">{{ number_format(SiteInfo::visitesPhysiquesAujourdhui(), 0, ',', ' ') }}</div>
+        <p class="stat-note">Visites enregistrées depuis minuit</p>
+      </article>
     </div>
   </div>
 </section>

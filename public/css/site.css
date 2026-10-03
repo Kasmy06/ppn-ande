@@ -245,11 +245,18 @@ img { max-width: 100%; display: block; }
   body.imprimer-annonce .am-img-wrap { height: auto; max-height: 340px; }
 }
 
-/* Chiffres du PPN (bandeau au-dessus du pied de page) */
-.stats-band { background: linear-gradient(135deg, #f6ecf8 0%, #fdfbfe 100%); padding: 56px 0 24px; border-top: 1px solid var(--border); }
-.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 18px; }
-.stat-tile { position: relative; background: #fff; border: 1px solid var(--border); border-radius: 18px; padding: 26px 22px; text-align: center; overflow: hidden; box-shadow: 0 10px 30px rgba(59,11,77,.06); }
-.stat-tile::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 4px; background: linear-gradient(90deg, var(--magenta), var(--green)); }
-.stat-icon { width: 52px; height: 52px; margin: 0 auto 12px; border-radius: 16px; background: var(--pale); color: var(--magenta); display: grid; place-items: center; font-size: 1.25rem; }
-.stat-num { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 2.4rem; color: var(--violet); line-height: 1; font-variant-numeric: tabular-nums; }
-.stat-label { margin-top: 8px; color: var(--muted); font-size: .9rem; }
+/* Registre des visites (bandeau au-dessus du pied de page), inspiré du modèle « Registre des visites » */
+.stats-band { background: var(--bg-page, #fdfbfe); padding: 56px 0 40px; border-top: 1px solid var(--border); }
+.stats-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 20px; margin-bottom: 22px; }
+.stats-head h2 { font-size: 1.5rem; color: var(--violet); }
+.stats-head span { color: var(--muted); font-size: .95rem; text-transform: capitalize; }
+.stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.stat-card { background: #fff; border: 1px solid var(--border); border-left: 6px solid var(--c, var(--violet)); border-radius: 12px; padding: 22px 22px 20px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.stat-card h3 { font-size: 1rem; font-weight: 600; color: var(--muted); margin: 0; }
+.stat-card.total { --c: var(--violet); }
+.stat-card.people { --c: var(--magenta); }
+.stat-card.today { --c: var(--green); border-color: var(--green); }
+.stat-num { font-family: 'Syne', sans-serif; font-size: clamp(2.6rem, 6vw, 3.8rem); font-weight: 800; line-height: 1; letter-spacing: -.02em; color: var(--c); font-variant-numeric: tabular-nums; }
+.stat-note { margin: 4px 0 0; color: var(--muted); font-size: .92rem; }
+@media (max-width: 820px) { .stats-grid { grid-template-columns: 1fr; } }
+@media (min-width: 821px) and (max-width: 960px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } .stat-card.today { grid-column: 1 / -1; } }
