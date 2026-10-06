@@ -43,6 +43,27 @@ class SiteCompletTest extends TestCase
         $this->get('/activites?q=cyber')->assertSee('Cybersécurité pour tous')->assertDontSee('Bureautique');
     }
 
+    public function test_activities_list_mixes_past_and_future_sorted_by_date_only(): void
+    {
+        $this->activite(['titre' => 'La plus ancienne', 'date_debut' => '2025-01-10']);
+        $this->activite(['titre' => 'La plus future', 'date_debut' => today()->addMonths(2)]);
+        $this->activite(['titre' => 'Entre les deux', 'date_debut' => today()->subDay()]);
+
+        $contenu = $this->get('/activites')->assertOk()
+            ->assertSee('La plus future')->assertSee('Entre les deux')->assertSee('La plus ancienne')
+            ->getContent();
+
+        $pFuture = strpos($contenu, 'La plus future');
+        $pEntre = strpos($contenu, 'Entre les deux');
+        $pAncienne = strpos($contenu, 'La plus ancienne');
+        $this->assertLessThan($pEntre, $pFuture, "l'activité la plus proche dans le temps doit passer en premier");
+        $this->assertLessThan($pAncienne, $pEntre, 'les activités passées suivent, de la plus récente à la plus ancienne');
+
+        // Les activités déjà passées sont signalées, sans être séparées dans un autre onglet.
+        $this->get('/activites')->assertSee('Terminée');
+        $this->assertStringNotContainsString('periode', $this->get('/activites')->getContent());
+    }
+
     public function test_contact_form_stores_message_and_blocks_bots(): void
     {
         $donnees = ['nom' => 'Awa', 'email' => 'awa@example.ci', 'sujet' => 'Inscription', 'message' => "Bonjour, je souhaite m'inscrire.", 'consentement' => 1];

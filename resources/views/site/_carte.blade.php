@@ -8,7 +8,10 @@
     <div class="card-date"><small>{{ $a->date_debut->translatedFormat('M') }}</small>{{ $a->date_debut->format('d') }}</div>
   </div>
   <div class="card-body">
-    <span class="tag {{ $a->categorie }}">{{ $a->categorie_label }}</span>
+    <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+      <span class="tag {{ $a->categorie }}">{{ $a->categorie_label }}</span>
+      @if ($a->est_passee)<span class="badge-passee">Terminée</span>@endif
+    </div>
     <h3>{{ $a->titre }}</h3>
     <p>{{ \Illuminate\Support\Str::limit($a->description, 110) }}</p>
     <div class="meta">

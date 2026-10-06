@@ -48,24 +48,20 @@ class SiteController extends Controller
     public function activites(Request $request): View
     {
         $categorie = $request->query('categorie');
-        $periode = $request->query('periode') === 'passees' ? 'passees' : 'a_venir';
         $q = trim((string) $request->query('q'));
 
+        // Une seule liste, pour toutes les activités publiées, de la plus récente à la plus ancienne.
         $activites = Activite::publie()
             ->when(array_key_exists((string) $categorie, Activite::CATEGORIES), fn ($query) => $query->where('categorie', $categorie))
             ->when($q !== '', fn ($query) => $query->where(function ($w) use ($q) {
                 $like = '%'.str_replace(['%', '_'], ['\%', '\_'], $q).'%';
                 $w->where('titre', 'like', $like)->orWhere('description', 'like', $like)->orWhere('lieu', 'like', $like);
             }))
-            ->when(
-                $periode === 'a_venir',
-                fn ($query) => $query->aVenir()->orderBy('date_debut'),
-                fn ($query) => $query->whereRaw('COALESCE(date_fin, date_debut) < ?', [today()->toDateString()])->orderByDesc('date_debut'),
-            )
+            ->orderByDesc('date_debut')
             ->paginate(9)
             ->withQueryString();
 
-        return view('site.activites', compact('activites', 'categorie', 'periode', 'q'));
+        return view('site.activites', compact('activites', 'categorie', 'q'));
     }
 
     public function activite(Activite $activite): View
