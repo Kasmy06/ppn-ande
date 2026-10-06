@@ -11,6 +11,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Derrière Cloudflare/Traefik : faire confiance aux en-têtes X-Forwarded-*
+        // pour générer des URL https et honorer SESSION_SECURE_COOKIE.
+        $middleware->trustProxies(at: '*');
+
         $middleware->alias([
             'role' => \App\Http\Middleware\EnsureUserHasRole::class,
         ]);
