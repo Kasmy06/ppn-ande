@@ -12,7 +12,7 @@ class ExampleTest extends TestCase
 
     public function test_root_shows_public_homepage(): void
     {
-        $this->get('/')->assertOk()->assertSee('Prochaines activités');
+        $this->get('/')->assertOk()->assertSee('Nos activités');
     }
 
     public function test_only_published_activities_are_public(): void

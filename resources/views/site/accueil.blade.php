@@ -147,13 +147,13 @@
 <section class="section">
   <div class="wrap">
     <div class="section-head">
-      <div><h2>Prochaines activités</h2><p>Ce qui se passe bientôt au PPN.</p></div>
+      <div><h2>Nos activités</h2><p>Les plus récentes en premier.</p></div>
       <a class="btn btn-outline" href="{{ route('site.activites') }}">Tout voir <i class="fas fa-arrow-right"></i></a>
     </div>
-    @if ($prochaines->isEmpty())
-      <p class="empty">Aucune activité programmée pour le moment. Revenez bientôt !</p>
+    @if ($activites->isEmpty())
+      <p class="empty">Aucune activité pour le moment. Revenez bientôt !</p>
     @else
-      <div class="grid">@foreach ($prochaines as $a) @include('site._carte', ['a' => $a]) @endforeach</div>
+      <div class="grid">@foreach ($activites as $a) @include('site._carte', ['a' => $a]) @endforeach</div>
     @endif
   </div>
 </section>
@@ -188,12 +188,4 @@
 </section>
 @endif
 
-@if ($recentes->isNotEmpty())
-<section class="section">
-  <div class="wrap">
-    <div class="section-head"><div><h2>Dernières activités</h2><p>Un aperçu de la vie du PPN.</p></div></div>
-    <div class="grid">@foreach ($recentes as $a) @include('site._carte', ['a' => $a]) @endforeach</div>
-  </div>
-</section>
-@endif
 @endsection

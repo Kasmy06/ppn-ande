@@ -22,8 +22,8 @@ class SiteController extends Controller
             'annonces' => SiteInfo::page('annonces')
                 ? Annonce::publie()->enCours()->orderByDesc('date_publication')->limit(8)->get()
                 : collect(),
-            'prochaines' => Activite::publie()->aVenir()->orderBy('date_debut')->limit(3)->get(),
-            'recentes' => Activite::publie()->orderByDesc('date_debut')->limit(3)->get(),
+            // Une seule liste, par date, comme sur la page Activités : plus de séparation à venir / passées.
+            'activites' => Activite::publie()->orderByDesc('date_debut')->limit(6)->get(),
             'medias' => SiteInfo::page('galerie') ? Media::publie()->latest()->limit(6)->get() : collect(),
         ]);
     }
