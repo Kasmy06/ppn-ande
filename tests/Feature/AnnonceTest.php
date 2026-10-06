@@ -62,7 +62,7 @@ class AnnonceTest extends TestCase
         $this->get('/annonces')->assertSee('Fermeture exceptionnelle');
     }
 
-    public function test_expired_announcement_is_hidden_and_urgent_ones_come_first(): void
+    public function test_expired_announcement_is_hidden(): void
     {
         Annonce::create(['titre' => 'Passée', 'publie' => true, 'date_expiration' => '2026-01-05'] + $this->base);
         Annonce::create(['titre' => 'Normale', 'publie' => true] + $this->base);
@@ -70,9 +70,27 @@ class AnnonceTest extends TestCase
 
         $this->travelTo('2026-06-01');
 
-        $reponse = $this->get('/annonces')->assertOk()->assertDontSee('Passée')->assertSee('Urgente')->assertSee('Normale');
-        $contenu = $reponse->getContent();
-        $this->assertLessThan(strpos($contenu, 'Normale'), strpos($contenu, 'Urgente'), 'les annonces urgentes passent en premier');
+        $this->get('/annonces')->assertOk()->assertDontSee('Passée')->assertSee('Urgente')->assertSee('Normale');
+    }
+
+    public function test_announcements_are_sorted_by_date_only_urgent_does_not_jump_the_queue(): void
+    {
+        Annonce::create(['titre' => 'La plus ancienne', 'publie' => true, 'urgente' => true, 'date_publication' => '2026-01-01'] + $this->base);
+        Annonce::create(['titre' => 'Du milieu', 'publie' => true, 'date_publication' => '2026-01-15'] + $this->base);
+        Annonce::create(['titre' => 'La plus récente', 'publie' => true, 'date_publication' => '2026-01-30'] + $this->base);
+
+        $this->travelTo('2026-06-01');
+
+        foreach (['/annonces', '/'] as $page) {
+            $contenu = $this->get($page)->assertOk()->getContent();
+            $positions = [
+                'La plus récente' => strpos($contenu, 'La plus récente'),
+                'Du milieu' => strpos($contenu, 'Du milieu'),
+                'La plus ancienne' => strpos($contenu, 'La plus ancienne'),
+            ];
+            $this->assertLessThan($positions['Du milieu'], $positions['La plus récente'], "$page : la plus récente doit passer en premier");
+            $this->assertLessThan($positions['La plus ancienne'], $positions['Du milieu'], "$page : l'urgente la plus ancienne ne doit pas passer devant, malgré son badge");
+        }
     }
 
     public function test_announcement_image_is_optimised_and_removed_with_the_announcement(): void
